@@ -1,0 +1,2 @@
+{:ring-server-options {:port 8000}
+ :open-url "http://[[server-hostname]]:[[server-port]]"}
