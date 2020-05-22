@@ -45,7 +45,7 @@
                    (when-let [k (keycode->keyword (.-keyCode event))]
                      (swap! c/*state update :pressed-keys disj k)))))
 
-(defonce context
+(def context
   (let [canvas (js/document.querySelector "canvas")
         context (.getContext canvas "webgl2")
         initial-game (assoc (pc/->game context)
