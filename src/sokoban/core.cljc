@@ -17,45 +17,27 @@
                        :tileset
                        :player-images}))
 
-(defn load-tiled-map [game parsed]
-  (let [map-width (-> parsed :attrs :width)
-        map-height (-> parsed :attrs :height)
-        ; tileset image and properties
-        tileset (first (filter #(= :tileset (:tag %)) (:content parsed)))
-        ; tileset image
-        image (first (filter #(= :image (:tag %)) (:content tileset)))
-        ; layers of the map
-        layers (->> parsed :content
-                    (filter #(= :layer (:tag %)))
-                    (map #(vector
-                           (-> % :attrs :name)
-                           (-> % :content first :content first)))
-                    (into {}))
-        {{:keys [tilewidth tileheight]} :attrs} tileset]
-    ; crop tileset
-    (utils/get-image (-> image :attrs :source)
-                     (fn [{:keys [data width height]}]
-                       (let [entity (c/compile game (e/->image-entity game data width height))
-                             tiles-vert (/ height tileheight)
-                             tiles-horiz (/ width tilewidth)
-                             images (vec
-                                     (for [y (range tiles-vert)
-                                           x (range tiles-horiz)]
-                                       (assoc (t/crop entity
-                                                      (* x tilewidth)
-                                                      (* y tileheight)
-                                                      tilewidth
-                                                      tileheight) :width tilewidth :height tileheight)))
-                             [_ box] images]
-                         (swap! *state update :player-images assoc :box box)
-                         (swap! *state assoc :tileset entity))))))
+(def player-width 32)
+(def player-height 32)
 
 (def parsed-tiled-map (edn/read-string (read-tiled-map "character.tmx")))
 
 (defn init [game]
   (gl game enable (gl game BLEND))
   (gl game blendFunc (gl game SRC_ALPHA) (gl game ONE_MINUS_SRC_ALPHA))
-  (load-tiled-map game parsed-tiled-map))
+  (utils/get-image "character.png"
+                   (fn [{:keys [data width height]}]
+                     (let [entity (c/compile game (e/->image-entity game data width height))
+                           images (vec (for [i (range 5)]
+                                         (t/crop entity
+                                                 (* i player-width)
+                                                 0
+                                                 player-width
+                                                 player-height)))
+                           [image1] images]
+        ;; add it to the state
+                       (swap! *state update :player-images assoc
+                              :image1 image1)))))
 
 (def screen-entity
   {:viewport {:x 0 :y 0 :width 0 :height 0}
@@ -64,7 +46,7 @@
 ; need to export tileset with image (preference in tiled)
 
 (defn tick [game] game
-  (let [box (:box (:player-images @*state))
+  (let [box (:image1 (:player-images @*state))
         tileset (:tileset @*state)]
     (c/render game (update screen-entity :viewport
                            assoc

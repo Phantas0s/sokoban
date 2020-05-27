@@ -3,7 +3,7 @@
  <tileset firstgid="1" name="sokoban_tilesheet" tilewidth="32" tileheight="32" tilecount="104" columns="13">
   <image source="images/Tilesheet/sokoban_tilesheet.png" width="416" height="256"/>
  </tileset>
- <layer id="1" name="Tile Layer 1" width="6" height="4">
+ <layer id="1" name="player" width="6" height="4">
   <data encoding="base64">
    NQAAADYAAAA3AAAAOAAAADkAAAA6AAAAQgAAAEMAAABEAAAARQAAAEYAAABHAAAATwAAAFAAAABRAAAAUgAAAFMAAABUAAAAXAAAAF0AAABeAAAAXwAAAGAAAABhAAAA
   </data>
