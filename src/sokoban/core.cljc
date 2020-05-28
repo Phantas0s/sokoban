@@ -1,5 +1,6 @@
 (ns sokoban.core
   (:require [sokoban.utils :as utils]
+            [sokoban.move :as move]
             [play-cljc.gl.core :as c]
             [play-cljc.gl.entities-2d :as e]
             [play-cljc.transforms :as t]
@@ -17,10 +18,10 @@
                        :tileset
                        :player-images}))
 
-(def player-width 32)
-(def player-height 32)
-
-(def parsed-tiled-map (edn/read-string (read-tiled-map "character.tmx")))
+(def tile-width 32)
+(def tile-height 32)
+(def player-width tile-width)
+(def player-height tile-height)
 
 (defn init [game]
   (gl game enable (gl game BLEND))
@@ -55,5 +56,8 @@
     (c/render game
               (-> box
                   (t/project 800 800)
-                  (t/scale 32 32)))
+                  (t/scale player-width player-height)))
+    (swap! *state
+           (fn [state]
+             (move/move game state)))
     game))

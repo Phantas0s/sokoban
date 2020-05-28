@@ -4,8 +4,8 @@
             [goog.events.KeyCodes]
             [goog.events :as events]))
 
-(def canvas-width 800)
-(def canvas-height 800)
+(def canvas-width 640)
+(def canvas-height 640)
 
 (defn resize [context]
   (set! context.canvas.width canvas-width)

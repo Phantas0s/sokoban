@@ -11,6 +11,8 @@
    #?(:clj  [play-cljc.macros-java :refer [math]]
       :cljs [play-cljc.macros-js :refer-macros [math]])))
 
+#?(:clj (defmacro read-tiled-map [fname]))
+
 (defn load-tiled-map [game parsed]
   (let [map-width (-> parsed :attrs :width)
         map-height (-> parsed :attrs :height)
