@@ -2,22 +2,19 @@
   (:require [sokoban.utils :as u]))
 
 (defn direction [k]
-  (k {:left [1 0]
-      :right [-1 0]
-      :up [1 0]
-      :down [0 1]
-      nil [0 0]}))
+  (k {:left [-1 0]
+      :right [1 0]
+      :up [0 -1]
+      :down [0 1]}))
 
-(defn calc
+(defn move-tile
   [[x y] game]
-  (let [[tile-width tile-height] (u/game-tile game)]
-    ((+ x tile-width) (+ y tile-height))))
+  [(* x 64) (* y 64)])
 
 (defn move
-  [game {:keys [:pressed-keys :player-x :player-y] :as state}]
-  (println (direction (first pressed-keys)))
-  (let [x (calc (direction (first pressed-keys)) game)]
-    (println x)
-    (assoc state
-           {:player-x x}
-           state)))
+  [game {:keys [pressed-keys player-x player-y] :as state}]
+  (if (empty? pressed-keys)
+    state
+    (let [next-direction (direction (first pressed-keys))
+          coord (move-tile next-direction game)]
+      (assoc state :player-x (+ player-x (first coord)) :player-y (+ player-y (second coord))))))

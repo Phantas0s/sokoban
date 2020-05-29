@@ -47,17 +47,19 @@
 ; need to export tileset with image (preference in tiled)
 
 (defn tick [game] game
-  (let [box (:image1 (:player-images @*state))
-        tileset (:tileset @*state)]
+  (let [{:keys [player-x player-y player-images] :as state} @*state
+        player (:image1 player-images)]
     (c/render game (update screen-entity :viewport
                            assoc
                            :width (-> game :context .-canvas .-clientWidth)
                            :height (-> game :context .-canvas .-clientHeight)))
     (c/render game
-              (-> box
+              (-> player
                   (t/project 800 800)
-                  (t/scale player-width player-height)))
+                  (t/translate player-x
+                               player-y)
+                  (t/scale 32 32)))
     (swap! *state
            (fn [state]
-             (move/move game state)))
+             (->> state (move/move game))))
     game))
