@@ -4,8 +4,10 @@
             [goog.events.KeyCodes]
             [goog.events :as events]))
 
-(def canvas-width 640)
-(def canvas-height 640)
+(def canvas-width 800)
+(def canvas-height 800)
+(def tile-width 32)
+(def tile-height 32)
 
 (defn resize [context]
   (set! context.canvas.width canvas-width)
@@ -49,6 +51,8 @@
   (let [canvas (js/document.querySelector "canvas")
         context (.getContext canvas "webgl2")
         initial-game (assoc (pc/->game context)
+                            :tile-width tile-width
+                            :tile-height tile-height
                             :delta-time 0
                             :total-time (msec->sec (js/performance.now)))]
     (listen-for-keys)

@@ -18,23 +18,20 @@
                        :tileset
                        :player-images}))
 
-(def tile-width 32)
-(def tile-height 32)
-(def player-width tile-width)
-(def player-height tile-height)
-
 (defn init [game]
   (gl game enable (gl game BLEND))
   (gl game blendFunc (gl game SRC_ALPHA) (gl game ONE_MINUS_SRC_ALPHA))
   (utils/get-image "character.png"
                    (fn [{:keys [data width height]}]
                      (let [entity (c/compile game (e/->image-entity game data width height))
+                           player-width (-> game :tile-width)
+                           player-height (-> game :tile-height)
                            images (vec (for [i (range 5)]
-                                         (t/crop entity
-                                                 (* i player-width)
-                                                 0
-                                                 player-width
-                                                 player-height)))
+                                         (assoc (t/crop entity
+                                                        (* i player-width)
+                                                        0
+                                                        player-width
+                                                        player-height) :width player-width :height player-height)))
                            [image1] images]
         ;; add it to the state
                        (swap! *state update :player-images assoc
@@ -48,17 +45,19 @@
 
 (defn tick [game] game
   (let [{:keys [player-x player-y player-images] :as state} @*state
-        player (:image1 player-images)]
+        player (:image1 player-images)
+        width (-> game :context .-canvas .-width)
+        height (-> game :context .-canvas .-height)]
     (c/render game (update screen-entity :viewport
                            assoc
-                           :width (-> game :context .-canvas .-clientWidth)
-                           :height (-> game :context .-canvas .-clientHeight)))
+                           :width width
+                           :height height))
     (c/render game
               (-> player
-                  (t/project 800 800)
+                  (t/project width height)
                   (t/translate player-x
                                player-y)
-                  (t/scale 32 32)))
+                  (t/scale (:width player) (:height player))))
     (swap! *state
            (fn [state]
              (->> state (move/move game))))
