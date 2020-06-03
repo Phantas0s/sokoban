@@ -15,8 +15,11 @@
 (defonce *state (atom {:pressed-keys #{}
                        :player-x 0
                        :player-y 0
-                       :tileset
-                       :player-images}))
+                       :tiled-map nil
+                       :tiled-map-entity nil
+                       :player-images {}}))
+
+(def tiled-map (edn/read-string (read-tiled-map "level1.tmx")))
 
 (defn init [game]
   (gl game enable (gl game BLEND))
@@ -35,7 +38,10 @@
                            [image1] images]
         ;; add it to the state
                        (swap! *state update :player-images assoc
-                              :image1 image1)))))
+                              :image1 image1))))
+  (tiles/load-tiled-map game tiled-map
+                        (fn [tiled-map entity]
+                          (swap! *state assoc :tiled-map tiled-map :tiled-map-entity entity))))
 
 (def screen-entity
   {:viewport {:x 0 :y 0 :width 0 :height 0}
@@ -44,14 +50,22 @@
 ; need to export tileset with image (preference in tiled)
 
 (defn tick [game] game
-  (let [{:keys [player-x player-y player-images] :as state} @*state
+  (let [{:keys [player-x player-y
+                player-images
+                tiled-map tiled-map-entity] :as state} @*state
         player (:image1 player-images)
         width (-> game :context .-canvas .-width)
-        height (-> game :context .-canvas .-height)]
+        height (-> game :context .-canvas .-height)
+        scaled-tile-size (/ height (:map-height tiled-map))]
     (c/render game (update screen-entity :viewport
                            assoc
                            :width width
                            :height height))
+
+    (when tiled-map-entity
+      (c/render game (-> tiled-map-entity
+                         (t/scale scaled-tile-size scaled-tile-size)
+                         (t/project width height))))
     (c/render game
               (-> player
                   (t/project width height)

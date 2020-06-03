@@ -10,7 +10,6 @@
 (defn in-context? [{:keys [context] :as game} [x y]]
   (let [width (-> context .-canvas .-width)
         height (-> context .-canvas .-height)]
-    (println x y)
     (and (>= x 0) (>= y 0) (< x width) (< y height))))
 
 (defn move-tile
