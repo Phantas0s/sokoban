@@ -4,6 +4,7 @@
    [play-cljc.transforms :as t]
    [play-cljc.math :as m]
    [play-cljc.instances :as i]
+   [clojure.pprint :refer [pprint]]
    [play-cljc.gl.core :as c]
    [play-cljc.gl.entities-2d :as e]
    #?@(:clj [[clojure.java.io :as io]
@@ -19,6 +20,7 @@
               pr-str)))
 
 (defn load-tiled-map [game parsed callback]
+  ; (pprint parsed)
   (let [map-width (-> parsed :attrs :width)
         map-height (-> parsed :attrs :height)
         tileset (first (filter #(= :tileset (:tag %)) (:content parsed)))
@@ -30,6 +32,7 @@
                            (-> % :attrs :name)
                            (-> % :content first :content first)))
                     (into {}))]
+    ; (pprint layers)
     (utils/get-image (-> image :attrs :source)
                      (fn [{:keys [data width height]}]
                        (let [entity (e/->image-entity game data width height)
@@ -67,7 +70,7 @@
                               {:layers {}
                                :tiles []
                                :entities []}
-                              ["background" "objects"])
+                              ["background" "walls" "boxes" "goals" "player-start"])
                              entity (i/->instanced-entity entity)
                              entity (c/compile game entity)
                              entity (reduce-kv i/assoc entity entities)]

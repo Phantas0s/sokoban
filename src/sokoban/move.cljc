@@ -14,8 +14,8 @@
 
 (defn move-tile
   [{:keys [tile-width tile-height] :as game} [dir-x dir-y] [obj-x obj-y]]
-  (let [new-x (+ obj-x (* dir-x tile-width))
-        new-y (+ obj-y (* dir-y tile-height))]
+  (let [new-x (+ obj-x dir-x)
+        new-y (+ obj-y dir-y)]
     (if (in-context? game [new-x new-y])
       [new-x new-y]
       [obj-x obj-y])))

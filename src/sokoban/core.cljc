@@ -41,11 +41,12 @@
                               :image1 image1))))
   (tiles/load-tiled-map game tiled-map
                         (fn [tiled-map entity]
+                          ; (pprint tiled-map)
                           (swap! *state assoc :tiled-map tiled-map :tiled-map-entity entity))))
 
 (def screen-entity
   {:viewport {:x 0 :y 0 :width 0 :height 0}
-   :clear {:color [(/ 173 255) (/ 216 255) (/ 230 255) 1] :depth 1}})
+   :clear {:color [(/ 255 255) (/ 255 255) (/ 255 255) 1] :depth 1}})
 
 ; need to export tileset with image (preference in tiled)
 
@@ -56,7 +57,8 @@
         player (:image1 player-images)
         width (-> game :context .-canvas .-width)
         height (-> game :context .-canvas .-height)
-        scaled-tile-size (/ height (:map-height tiled-map))]
+        tile-width (-> game :tile-width)
+        tile-height (-> game :tile-height)]
     (c/render game (update screen-entity :viewport
                            assoc
                            :width width
@@ -64,15 +66,16 @@
 
     (when tiled-map-entity
       (c/render game (-> tiled-map-entity
-                         (t/scale scaled-tile-size scaled-tile-size)
-                         (t/project width height))))
+                         (t/project width height)
+                         (t/scale tile-width tile-height))))
     (c/render game
               (-> player
                   (t/project width height)
-                  (t/translate player-x
-                               player-y)
-                  (t/scale (:width player) (:height player))))
+                  (t/translate (* player-x tile-width)
+                               (* player-y tile-height))
+                  (t/scale tile-width tile-height)))
     (swap! *state
            (fn [state]
              (->> state (move/move game))))
     game))
+
