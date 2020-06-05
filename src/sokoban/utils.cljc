@@ -22,3 +22,6 @@
 
 (defn game-tile [game]
   (vec (/ (game-width game) (game-height game))))
+
+(defn pos->pixel [game [x y]]
+  [(* (:tile-width game) x) (* (:tile-height game) y)])
