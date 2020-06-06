@@ -14,8 +14,7 @@
                :cljs [sokoban.tiles :as tiles :refer-macros [read-tiled-map]])))
 
 (defonce *state (atom {:pressed-keys #{}
-                       :player-x 0
-                       :player-y 0
+                       :player-pos []
                        :tiled-map nil
                        :tiled-map-entity nil
                        :player-images {}}))
@@ -41,10 +40,11 @@
   (tiles/load-tiled-map game tiled-map
                         (fn [tiled-map entity]
                           ; (println (count tiled-map))
+                          (pprint entity)
                           ; (pprint tiled-map)
                           (swap! *state assoc :tiled-map tiled-map :tiled-map-entity entity)))
   (let [player-start (into {} (filter #(= (% :layer) "player-start") (-> (:tiled-map @*state) :tiles)))]
-    (swap! *state assoc :player-x (:tile-x player-start) :player-y (:tile-y player-start))))
+    (swap! *state assoc :player-pos (:pos player-start))))
 
 (def screen-entity
   {:viewport {:x 0 :y 0 :width 0 :height 0}
@@ -53,7 +53,7 @@
 ; need to export tileset with image (preference in tiled)
 
 (defn tick [game] game
-  (let [{:keys [player-x player-y
+  (let [{:keys [player-pos
                 player-images
                 tiled-map tiled-map-entity] :as state} @*state
         player (:image1 player-images)
@@ -61,7 +61,7 @@
         height (-> game :context .-canvas .-height)
         tile-width (-> game :tile-width)
         tile-height (-> game :tile-height)
-        [player-x-pix player-y-pix] (u/pos->pixel game [player-x player-y])]
+        [player-x-pix player-y-pix] (u/pos->pixel game player-pos)]
     (c/render game (update screen-entity :viewport
                            assoc
                            :width width
@@ -78,5 +78,5 @@
                   (t/scale tile-width tile-height)))
     (swap! *state
            (fn [state]
-             (->> state (move/move game))))
+             (->> state (move/move game tiled-map))))
     game))
