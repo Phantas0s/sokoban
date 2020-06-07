@@ -37,8 +37,8 @@
 
 (defn move-box [game tiled-map tiled-map-entity tile]
   (let [tile-id (tile-id game tiled-map tile)
-        tme (i/dissoc tiled-map-entity tile-id)]
-    (pprint tme)
+        tme (reduce-kv i/assoc tiled-map-entity (:entities tiled-map))]
+    (pprint (:entities tiled-map))
     (assoc {} :tiled-map-entity tme
            :tiled-map (-> tiled-map
                           (update :tiles (fn [tiles]

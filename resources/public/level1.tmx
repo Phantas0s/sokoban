@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.3.3" orientation="orthogonal" renderorder="right-down" width="6" height="6" tilewidth="32" tileheight="32" infinite="0" nextlayerid="13" nextobjectid="1">
+<map version="1.2" tiledversion="1.3.5" orientation="orthogonal" renderorder="right-down" width="6" height="6" tilewidth="32" tileheight="32" infinite="0" nextlayerid="14" nextobjectid="2">
  <tileset firstgid="1" name="sokoban_tilesheet" tilewidth="32" tileheight="32" tilecount="104" columns="13">
   <image source="images/Tilesheet/sokoban_tilesheet.png" width="416" height="256"/>
  </tileset>
@@ -28,4 +28,11 @@
    AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
   </data>
  </layer>
+ <objectgroup id="13" name="Object Layer 1">
+  <object id="1" name="test" x="0" y="0" width="32" height="32">
+   <properties>
+    <property name="myProperty" value="hey"/>
+   </properties>
+  </object>
+ </objectgroup>
 </map>

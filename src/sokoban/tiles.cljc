@@ -75,6 +75,7 @@
                          (callback
                           {:layers layers
                            :tiles tiles
+                           :entities entities
                            :map-width map-width
                            :map-height map-height}
                           entity))))))

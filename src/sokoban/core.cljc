@@ -71,11 +71,10 @@
       (c/render game (-> tiled-map-entity
                          (t/project width height)
                          (t/scale tile-width tile-height))))
-    (c/render game
-              (-> player
-                  (t/project width height)
-                  (t/translate player-x-pix player-y-pix)
-                  (t/scale tile-width tile-height)))
+    (c/render game (-> player
+                       (t/project width height)
+                       (t/translate player-x-pix player-y-pix)
+                       (t/scale tile-width tile-height)))
     (swap! *state
            (fn [state]
              (->> state (move/move game))))
