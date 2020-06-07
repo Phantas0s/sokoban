@@ -40,7 +40,7 @@
   (tiles/load-tiled-map game tiled-map
                         (fn [tiled-map entity]
                           ; (println (count tiled-map))
-                          (pprint entity)
+                          ; (pprint entity)
                           ; (pprint tiled-map)
                           (swap! *state assoc :tiled-map tiled-map :tiled-map-entity entity)))
   (let [player-start (into {} (filter #(= (% :layer) "player-start") (-> (:tiled-map @*state) :tiles)))]
@@ -78,5 +78,5 @@
                   (t/scale tile-width tile-height)))
     (swap! *state
            (fn [state]
-             (->> state (move/move game tiled-map))))
+             (->> state (move/move game))))
     game))

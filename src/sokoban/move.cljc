@@ -1,6 +1,16 @@
 (ns sokoban.move
   (:require [sokoban.utils :as u]
+            [play-cljc.gl.core :as c]
+            [play-cljc.instances :as i]
             [clojure.pprint :refer [pprint]]))
+
+(defn add-pos
+  [[x1 y1] [x2 y2]]
+  [(+ x1 x2) (+ y1 y2)])
+
+(defn sub-pos
+  [[x1 y1] [x2 y2]]
+  [(- x2 x1) (+ y2 y1)])
 
 (def direction
   {:left [-1 0]
@@ -13,22 +23,27 @@
         height (/ (-> context .-canvas .-height) tile-height)]
     (and (>= x 0) (>= y 0) (< x width) (< y height))))
 
-(defn collision? [game tiled-map name new-pos]
-  (let [obj (into [] (filter #(= (% :layer) name) (:tiles tiled-map)))]
-    (filter #(= (:pos %) new-pos) obj)))
+(defn get-tile [game tiled-map layer-name pos]
+  (get-in (get (:layers tiled-map) layer-name) pos))
 
-(defn remove-tile [game tiled-map name new-pos]
-  (into [] (remove #(and (= (:layer name)) (= (:pos %) new-pos)) (:tiles tiled-map))))
+(defn collision? [game tiled-map layer-name new-pos]
+  (get-tile game tiled-map layer-name new-pos))
 
-(defn axis-add
-  [[x1 y1] [x2 y2]]
-  [(+ x1 x2) (+ y1 y2)])
+(defn tile-id [game tile-map tile]
+  (.indexOf (:tiles tile-map) tile))
 
-(defn move-box [game tiled-map new-pos]
-  (let [objs (into [] (filter #(= (% :layer) "boxes") (:tiles tiled-map)))
-        box (into {} (collision? game tiled-map "boxes" new-pos))
-        new-box (assoc box :pos (axis-add (:pos box) new-pos))]
-    (assoc tiled-map :tiles (into (remove-tile game tiled-map "boxes" new-pos) [new-box]))))
+(defn get-tile-entity [game tile-map tile]
+  (nth (:tiles tile-map) (.indexOf (:tiles tile-map) tile)))
+
+(defn move-box [game tiled-map tiled-map-entity tile]
+  (let [tile-id (tile-id game tiled-map tile)
+        tme (i/dissoc tiled-map-entity tile-id)]
+    (pprint tme)
+    (assoc {} :tiled-map-entity tme
+           :tiled-map (-> tiled-map
+                          (update :tiles (fn [tiles]
+                                           (-> (subvec tiles 0 tile-id)
+                                               (into (subvec tiles (inc tile-id))))))))))
 
 (defn move-tile
   [{:keys [tile-width tile-height] :as game} [dir-x dir-y] [obj-x obj-y]]
@@ -39,7 +54,7 @@
       [obj-x obj-y])))
 
 (defn move
-  [game tiled-map {:keys [pressed-keys player-pos] :as state}]
+  [game {:keys [tiled-map tiled-map-entity pressed-keys player-pos] :as state}]
   (if (empty? pressed-keys)
     state
     (let [k (first pressed-keys)
@@ -47,5 +62,5 @@
           new-pos (move-tile game next-direction player-pos)
           new-states (assoc state :pressed-keys #{} :player-pos new-pos)]
       (cond (not-empty (collision? game tiled-map "walls" new-pos)) state
-            (not-empty (collision? game tiled-map "boxes" new-pos)) (assoc new-states :tiled-map (move-box game tiled-map new-pos))
+            (not-empty (collision? game tiled-map "boxes" new-pos)) (merge new-states (move-box game tiled-map tiled-map-entity (get-tile game tiled-map "boxes" new-pos)))
             :else new-states))))

@@ -20,7 +20,6 @@
               pr-str)))
 
 (defn load-tiled-map [game parsed callback]
-  ; (pprint parsed)
   (let [map-width (-> parsed :attrs :width)
         map-height (-> parsed :attrs :height)
         tileset (first (filter #(= :tileset (:tag %)) (:content parsed)))
@@ -32,7 +31,6 @@
                            (-> % :attrs :name)
                            (-> % :content first :content first)))
                     (into {}))]
-    ; (pprint layers)
     (utils/get-image (-> image :attrs :source)
                      (fn [{:keys [data width height]}]
                        (let [entity (e/->image-entity game data width height)
