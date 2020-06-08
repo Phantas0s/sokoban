@@ -44,7 +44,7 @@
                           ; (pprint tiled-map)
                           (swap! *state assoc :tiled-map tiled-map :tiled-map-entity entity)))
   (let [player-start (into {} (filter #(= (% :layer) "player-start") (-> (:tiled-map @*state) :tiles)))]
-    (swap! *state assoc :player-pos (:pos player-start))))
+    (swap! *state assoc :player-pos [(:tile-x player-start) (:tile-y player-start)])))
 
 (def screen-entity
   {:viewport {:x 0 :y 0 :width 0 :height 0}

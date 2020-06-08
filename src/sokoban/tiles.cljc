@@ -54,7 +54,7 @@
                                            y (int (/ i map-width))
                                            image-id (dec (nth layer i))
                                            tile-map (when (>= image-id 0)
-                                                      {:layer layer-name :pos [x y]})]
+                                                      {:layer layer-name :tile-x x :tile-y y})]
                                        (cond-> m
                                          true
                                          (assoc-in [:layers layer-name x y] tile-map)
