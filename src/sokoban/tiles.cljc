@@ -54,15 +54,12 @@
                                            y (int (/ i map-width))
                                            image-id (dec (nth layer i))
                                            tile-map (when (>= image-id 0)
-                                                      {:layer layer-name :tile-x x :tile-y y})]
+                                                      {:layer layer-name :tile-x x :tile-y y :id (count (:tiles m))})]
                                        (cond-> m
-                                         true
-                                         (assoc-in [:layers layer-name x y] tile-map)
-                                         tile-map
-                                         (update :tiles conj tile-map)
-                                         tile-map
-                                         (update :entities conj
-                                                 (t/translate (nth images image-id) x y)))))
+                                         true (assoc-in [:layers layer-name x y] tile-map)
+                                         tile-map (update :tiles conj tile-map)
+                                         tile-map (update :entities conj
+                                                          (t/translate (nth images image-id) x y)))))
                                    m
                                    (range (count layer)))))
                               {:layers {}

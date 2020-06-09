@@ -41,7 +41,7 @@
                         (fn [tiled-map entity]
                           ; (println (count tiled-map))
                           ; (pprint entity)
-                          ; (pprint tiled-map)
+                          ; (pprint (:tiles tiled-map))
                           (swap! *state assoc :tiled-map tiled-map :tiled-map-entity entity)))
   (let [player-start (into {} (filter #(= (% :layer) "player-start") (-> (:tiled-map @*state) :tiles)))]
     (swap! *state assoc :player-pos [(:tile-x player-start) (:tile-y player-start)])))
