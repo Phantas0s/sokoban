@@ -1,5 +1,6 @@
 (ns sokoban.move
   (:require [sokoban.utils :as u]
+            [sokoban.tiles :as ti]
             [play-cljc.transforms :as t]
             [play-cljc.gl.core :as c]
             [play-cljc.instances :as i]
@@ -24,20 +25,8 @@
         height (/ (-> context .-canvas .-height) tile-height)]
     (and (>= x 0) (>= y 0) (< x width) (< y height))))
 
-(defn get-tile [game tiled-map layer-name pos]
-  (get-in (get (:layers tiled-map) layer-name) pos))
-
-(defn collision? [game tiled-map layer-name new-pos]
-  (get-tile game tiled-map layer-name new-pos))
-
-(defn tile-id [game tile-map tile]
-  (.indexOf (:tiles tile-map) tile))
-
-(defn get-tile-entity [game tile-map tile]
-  (nth (:tiles tile-map) (.indexOf (:tiles tile-map) tile)))
-
-(defn swap [v i1 i2]
-  (assoc v i2 (v i1) i1 (v i2)))
+(defn collision? [tiled-map layer-name new-pos]
+  (ti/tile-from-position tiled-map layer-name new-pos))
 
 (defn move-tile
   [{:keys [tile-width tile-height] :as game} [dir-x dir-y] [obj-x obj-y]]
@@ -51,12 +40,12 @@
   (into (conj (subvec entities 0 tile-id) (t/translate (nth entities tile-id) dir-x dir-y)) (subvec entities (inc tile-id))))
 
 (defn move-box [game tiled-map tiled-map-entity [dir-x dir-y] tile new-states state]
-  (let [tile-id (tile-id game tiled-map tile)
+  (let [tile-id (ti/tile-id tiled-map tile)
         old-pos [(:tile-x tile) (:tile-y tile)]
         new-box {:layer "boxes"  :tile-x (+ (:tile-x tile) dir-x) :tile-y (+ (:tile-y tile) dir-y)}
         new-entities (move-entity (:entities tiled-map) tile-id [dir-x dir-y])
         tme (reduce-kv i/assoc tiled-map-entity new-entities)]
-    (if (or (not-empty (collision? game tiled-map "walls" [(:tile-x new-box) (:tile-y new-box)])) (not-empty (collision? game tiled-map "boxes" [(:tile-x new-box) (:tile-y new-box)])))
+    (if (or (not-empty (collision? tiled-map "walls" (vector (:tile-x new-box) (:tile-y new-box)))) (not-empty (collision? tiled-map "boxes" (vector (:tile-x new-box) (:tile-y new-box)))))
       state
       (merge new-states (assoc {} :tiled-map-entity tme
                                :tiled-map (-> tiled-map
@@ -74,7 +63,7 @@
           next-direction (k direction)
           new-pos (move-tile game next-direction player-pos)
           new-states (assoc state :pressed-keys #{} :player-pos new-pos)
-          box-tile (get-tile game tiled-map "boxes" new-pos)]
-      (cond (not-empty (collision? game tiled-map "walls" new-pos)) state
-            (not-empty (collision? game tiled-map "boxes" new-pos)) (move-box game tiled-map tiled-map-entity next-direction box-tile new-states state)
+          box-tile (ti/tile-from-position tiled-map "boxes" new-pos)]
+      (cond (not-empty (collision? tiled-map "walls" new-pos)) state
+            (not-empty (collision? tiled-map "boxes" new-pos)) (move-box game tiled-map tiled-map-entity next-direction box-tile new-states state)
             :else new-states))))

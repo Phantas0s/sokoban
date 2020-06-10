@@ -19,9 +19,23 @@
               ts/parse
               pr-str)))
 
+(defn crop-tileset [tileset width height tilewidth tileheight]
+  "Crop the tileset (must be included in the map) and return each tile as image"
+  (let [tiles-vert (/ height tileheight)
+        tiles-horiz (/ width tilewidth)]
+    (vec
+     (for [y (range tiles-vert)
+           x (range tiles-horiz)]
+       (t/crop tileset
+               (* x tilewidth)
+               (* y tileheight)
+               tilewidth
+               tileheight)))))
+
 (defn load-tiled-map [game parsed callback]
-  (let [map-width (-> parsed :attrs :width)
-        map-height (-> parsed :attrs :height)
+  "Parse a map (tmx) from the tiled software"
+  (let [map-width (-> parsed :attrs :width) ; number of tiles
+        map-height (-> parsed :attrs :height) ; number of tiles
         tileset (first (filter #(= :tileset (:tag %)) (:content parsed)))
         image (first (filter #(= :image (:tag %)) (:content tileset)))
         {{:keys [tilewidth tileheight]} :attrs} tileset
@@ -33,17 +47,9 @@
                     (into {}))]
     (utils/get-image (-> image :attrs :source)
                      (fn [{:keys [data width height]}]
+                       (println layers)
                        (let [entity (e/->image-entity game data width height)
-                             tiles-vert (/ height tileheight)
-                             tiles-horiz (/ width tilewidth)
-                             images (vec
-                                     (for [y (range tiles-vert)
-                                           x (range tiles-horiz)]
-                                       (t/crop entity
-                                               (* x tilewidth)
-                                               (* y tileheight)
-                                               tilewidth
-                                               tileheight)))
+                             tiles-img (crop-tileset entity width height tilewidth tileheight)
                              {:keys [layers tiles entities]}
                              (reduce
                               (fn [m layer-name]
@@ -54,12 +60,11 @@
                                            y (int (/ i map-width))
                                            image-id (dec (nth layer i))
                                            tile-map (when (>= image-id 0)
-                                                      {:layer layer-name :tile-x x :tile-y y :id (count (:tiles m))})]
+                                                      {:layer layer-name :tile-x x :tile-y y})]
                                        (cond-> m
                                          true (assoc-in [:layers layer-name x y] tile-map)
                                          tile-map (update :tiles conj tile-map)
-                                         tile-map (update :entities conj
-                                                          (t/translate (nth images image-id) x y)))))
+                                         tile-map (update :entities conj (t/translate (nth tiles-img image-id) x y)))))
                                    m
                                    (range (count layer)))))
                               {:layers {}
@@ -76,3 +81,12 @@
                            :map-width map-width
                            :map-height map-height}
                           entity))))))
+
+(defn tile-from-name [tiled-map tile-name]
+  (into {} (filter #(= (% :layer) tile-name) (:tiles tiled-map))))
+
+(defn tile-from-position [tiled-map layer-name pos]
+  (get-in (get (:layers tiled-map) layer-name) pos))
+
+(defn tile-id [tile-map tile]
+  (.indexOf (:tiles tile-map) tile))
