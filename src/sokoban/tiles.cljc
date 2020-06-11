@@ -20,7 +20,7 @@
               pr-str)))
 
 (defn crop-tileset [tileset width height tilewidth tileheight]
-  "Crop the tileset (must be included in the map) and return each tile as image"
+  "Crop the tileset (must be included in the parsed map) and return each tile as image"
   (let [tiles-vert (/ height tileheight)
         tiles-horiz (/ width tilewidth)]
     (vec
@@ -47,7 +47,6 @@
                     (into {}))]
     (utils/get-image (-> image :attrs :source)
                      (fn [{:keys [data width height]}]
-                       (println layers)
                        (let [entity (e/->image-entity game data width height)
                              tiles-img (crop-tileset entity width height tilewidth tileheight)
                              {:keys [layers tiles entities]}
@@ -60,7 +59,7 @@
                                            y (int (/ i map-width))
                                            image-id (dec (nth layer i))
                                            tile-map (when (>= image-id 0)
-                                                      {:layer layer-name :tile-x x :tile-y y})]
+                                                      {:layer layer-name :pos (vector x y)})]
                                        (cond-> m
                                          true (assoc-in [:layers layer-name x y] tile-map)
                                          tile-map (update :tiles conj tile-map)
@@ -77,10 +76,10 @@
                          (callback
                           {:layers layers
                            :tiles tiles
+                           :tile-map-entity entity
                            :entities entities
                            :map-width map-width
-                           :map-height map-height}
-                          entity))))))
+                           :map-height map-height}))))))
 
 (defn tile-from-name [tiled-map tile-name]
   (into {} (filter #(= (% :layer) tile-name) (:tiles tiled-map))))
@@ -90,3 +89,6 @@
 
 (defn tile-id [tile-map tile]
   (.indexOf (:tiles tile-map) tile))
+
+(defn move-tile-entity [entities tile-id [dir-x dir-y]]
+  (into (conj (subvec entities 0 tile-id) (t/translate (nth entities tile-id) dir-x dir-y)) (subvec entities (inc tile-id))))

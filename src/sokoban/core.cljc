@@ -16,7 +16,6 @@
 (defonce *state (atom {:pressed-keys #{}
                        :player-pos []
                        :tiled-map nil
-                       :tiled-map-entity nil
                        :player-images {}}))
 
 (def tiled-map (edn/read-string (read-tiled-map "level1.tmx")))
@@ -38,10 +37,10 @@
                            [image1] images]
                        (swap! *state update :player-images assoc :image1 image1))))
   (tiles/load-tiled-map game tiled-map
-                        (fn [tiled-map entity]
-                          (swap! *state assoc :tiled-map tiled-map :tiled-map-entity entity)))
+                        (fn [tiled-map]
+                          (swap! *state assoc :tiled-map tiled-map)))
   (let [player-start (into {} (filter #(= (% :layer) "player-start") (-> (:tiled-map @*state) :tiles)))]
-    (swap! *state assoc :player-pos [(:tile-x player-start) (:tile-y player-start)])))
+    (swap! *state assoc :player-pos (:pos player-start))))
 
 (def screen-entity
   {:viewport {:x 0 :y 0 :width 0 :height 0}
@@ -52,20 +51,21 @@
 (defn tick [game] game
   (let [{:keys [player-pos
                 player-images
-                tiled-map tiled-map-entity] :as state} @*state
+                tiled-map] :as state} @*state
         player (:image1 player-images)
         width (-> game :context .-canvas .-width)
         height (-> game :context .-canvas .-height)
         tile-width (-> game :tile-width)
         tile-height (-> game :tile-height)
+        tile-map-entity (:tile-map-entity tiled-map)
         [player-x-pix player-y-pix] (u/pos->pixel game player-pos)]
     (c/render game (update screen-entity :viewport
                            assoc
                            :width width
                            :height height))
 
-    (when tiled-map-entity
-      (c/render game (-> tiled-map-entity
+    (when tile-map-entity
+      (c/render game (-> tile-map-entity
                          (t/project width height)
                          (t/scale tile-width tile-height))))
     (c/render game (-> player
