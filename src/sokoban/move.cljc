@@ -22,7 +22,6 @@
   (some false? (map #(nil? (collision? tiled-map % new-pos)) layers)))
 
 (defn move-object
-  "Move a game object which is not part of the tiled-map"
   [game [dir-x dir-y] [obj-x obj-y]]
   (let [new-x (+ obj-x dir-x)
         new-y (+ obj-y dir-y)]
@@ -30,32 +29,34 @@
       [new-x new-y]
       [obj-x obj-y])))
 
-(defn move-tile [tiled-map layer [dir-x dir-y] tile]
+(defn move-tile [game tiled-map layer direction tile prevent-move]
   (let [tile-id (ti/tile-id tiled-map tile)
-        new-box {:layer layer :pos (vector (+ (first (:pos tile)) dir-x) (+ (second (:pos tile)) dir-y))}
-        new-entities (ti/move-tile-entity (:entities tiled-map) tile-id [dir-x dir-y])
-        tme (reduce-kv i/assoc (:tile-map-entity tiled-map) new-entities)]
-    (if (collisions? tiled-map ["walls" "boxes"] (:pos new-box))
+        new-pos {:layer layer :pos (move-object game direction (:pos tile))}]
+    (if (prevent-move (:pos new-pos))
       false
-      (assoc {} :tiled-map (-> tiled-map
-                               (update :tiles (fn [tiles] (into (conj (subvec tiles 0 tile-id) new-box) (subvec tiles (inc tile-id)))))
-                               (assoc-in [:layers layer (first (:pos tile)) (second (:pos tile))] nil)
-                               (assoc-in [:layers layer (first (:pos new-box)) (second (:pos new-box))] new-box)
-                               (assoc :entities new-entities
-                                      :tile-map-entity tme))))))
+      (-> tiled-map
+          (assoc-in [:layers layer (first (:pos tile)) (second (:pos tile))] nil)
+          (assoc-in [:layers layer (first (:pos new-pos)) (second (:pos new-pos))] new-pos)
+          (ti/move-tile-entity tile-id direction new-pos)))))
 
-(defn move
+(defn player-interactions [game tiled-map direction new-player-pos]
+  (let [box-tile (ti/tile-from-position tiled-map "boxes" new-player-pos)]
+    (if (not-empty (collision? tiled-map "boxes" new-player-pos))
+      (move-tile game tiled-map "boxes" direction box-tile (fn [new-pos] (collisions? tiled-map ["walls" "boxes"] new-pos)))
+      tiled-map)))
+
+(defn player-move
+  "Moving the player is the base of all interactions in the game"
   [game {:keys [tiled-map pressed-keys player-pos] :as state}]
   (if (empty? pressed-keys)
     state
     (let [k (first pressed-keys)
-          next-direction (k direction)
-          new-pos (move-object game next-direction player-pos)
-          new-states (assoc state :pressed-keys #{} :player-pos new-pos)
-          box-tile (ti/tile-from-position tiled-map "boxes" new-pos)]
-      (cond (not-empty (collision? tiled-map "walls" new-pos)) state
-            (not-empty (collision? tiled-map "boxes" new-pos)) (let [updated-tiled-map (move-tile tiled-map "boxes" next-direction box-tile)]
-                                                                 (if (false? updated-tiled-map)
-                                                                   state
-                                                                   (merge new-states updated-tiled-map)))
-            :else new-states))))
+          direction (k direction)
+          new-state (assoc state :pressed-keys #{})
+          new-pos (move-object game direction player-pos)]
+      (if (collision? tiled-map "walls" new-pos)
+        new-state
+        (let [new-tiled-map (player-interactions game tiled-map direction new-pos)]
+          (if (false? new-tiled-map)
+            new-state
+            (assoc new-state :player-pos new-pos :tiled-map new-tiled-map)))))))

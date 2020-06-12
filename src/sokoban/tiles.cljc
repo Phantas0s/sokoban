@@ -90,5 +90,9 @@
 (defn tile-id [tile-map tile]
   (.indexOf (:tiles tile-map) tile))
 
-(defn move-tile-entity [entities tile-id [dir-x dir-y]]
-  (into (conj (subvec entities 0 tile-id) (t/translate (nth entities tile-id) dir-x dir-y)) (subvec entities (inc tile-id))))
+(defn move-tile-entity [tiled-map tile-id [dir-x dir-y] new-pos]
+  (let [new-entities (into (conj (subvec (:entities tiled-map) 0 tile-id) (t/translate (nth (:entities tiled-map) tile-id) dir-x dir-y)) (subvec (:entities tiled-map) (inc tile-id)))]
+    (assoc tiled-map
+           :tiles (into (conj (subvec (:tiles tiled-map) 0 tile-id) new-pos) (subvec (:tiles tiled-map) (inc tile-id)))
+           :entities new-entities
+           :tile-map-entity (reduce-kv i/assoc (:tile-map-entity tiled-map) new-entities))))

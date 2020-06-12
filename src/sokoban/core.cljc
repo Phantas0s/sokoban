@@ -74,5 +74,5 @@
                        (t/scale tile-width tile-height)))
     (swap! *state
            (fn [state]
-             (->> state (move/move game))))
+             (->> state (move/player-move game))))
     game))
