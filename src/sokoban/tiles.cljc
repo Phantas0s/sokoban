@@ -16,6 +16,8 @@
               ts/parse
               pr-str)))
 
+(def box-goal-id 14)
+
 (defn crop-tileset [tileset width height tilewidth tileheight]
   "Crop the tileset (must be included in the parsed map) and return each tile as image"
   (let [tiles-vert (/ height tileheight)
@@ -76,6 +78,7 @@
                            :tiles tiles
                            :tile-map-entity entity
                            :entities entities
+                           :tilesheet tiles-img
                            :map-width map-width
                            :map-height map-height}))))))
 
@@ -90,12 +93,12 @@
 (defn tile-id [tile-map tile]
   (.indexOf (:tiles tile-map) tile))
 
-(defn move-tile [tiled-map tile layer tile-id [dir-x dir-y] tile-moved]
-  (let [new-entities (into (conj (subvec (:entities tiled-map) 0 tile-id) (t/translate (nth (:entities tiled-map) tile-id) dir-x dir-y)) (subvec (:entities tiled-map) (inc tile-id)))]
+(defn move-tile [tiled-map tile layer tile-id [dir-x dir-y] tile-moved change-sprite]
+  (let [new-entity (change-sprite (:pos tile-moved) tile-id)
+        new-entities (into (conj (subvec (:entities tiled-map) 0 tile-id) (t/translate new-entity dir-x dir-y)) (subvec (:entities tiled-map) (inc tile-id)))]
     (-> tiled-map (assoc-in [:layers layer (first (:pos tile)) (second (:pos tile))] nil)
         (assoc-in [:layers layer (first (:pos tile-moved)) (second (:pos tile-moved))] tile-moved)
         (assoc
          :tiles (into (conj (subvec (:tiles tiled-map) 0 tile-id) tile-moved) (subvec (:tiles tiled-map) (inc tile-id)))
          :entities new-entities
          :tile-map-entity (reduce-kv i/assoc (:tile-map-entity tiled-map) new-entities)))))
-

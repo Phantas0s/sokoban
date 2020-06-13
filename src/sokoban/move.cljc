@@ -1,5 +1,6 @@
 (ns sokoban.move
   (:require
+   [play-cljc.transforms :as t]
    [sokoban.tiles :as ti]
    [clojure.pprint :refer [pprint]]))
 
@@ -30,19 +31,24 @@
       [new-x new-y]
       [obj-x obj-y])))
 
-(defn move-tile [game tiled-map tile layer direction prevent-move?]
+(defn change-box-sprite? [tiled-map layer [old-x old-y] [x y] tile-id]
+  (if (not-empty (collision? tiled-map layer (vector x y)))
+    (t/translate (nth (:tilesheet tiled-map) 14) old-x old-y)
+    (nth (:entities tiled-map) tile-id)))
+
+(defn move-tile [game tiled-map tile layer direction prevent-move? sprite]
   "Moving a tile given a layer, a direction and a predicate to prevent moving"
   (let [tile-id (ti/tile-id tiled-map tile)
         tile-moved {:layer layer :pos (move-object game direction (:pos tile))}]
     (if (prevent-move? (:pos tile-moved))
       false
-      (ti/move-tile tiled-map tile layer tile-id direction tile-moved))))
+      (ti/move-tile tiled-map tile layer tile-id direction tile-moved sprite))))
 
 (defn player-interactions [game tiled-map direction new-player-pos]
   "Everything the player can interact with"
   (let [box-tile (ti/tile-from-position tiled-map "boxes" new-player-pos)]
     (if (not-empty (collision? tiled-map "boxes" new-player-pos))
-      (move-tile game tiled-map box-tile "boxes" direction (fn [new-pos] (collisions? tiled-map ["walls" "boxes"] new-pos)))
+      (move-tile game tiled-map box-tile "boxes" direction (fn [new-pos] (collisions? tiled-map ["walls" "boxes"] new-pos)) (fn [new-pos tile-id] (change-box-sprite? tiled-map "goals" (:pos box-tile) new-pos tile-id)))
       tiled-map)))
 
 (defn player-move
