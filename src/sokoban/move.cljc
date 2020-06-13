@@ -53,10 +53,8 @@
     (let [k (first pressed-keys)
           direction (k direction)
           new-state (assoc state :pressed-keys #{})
-          new-pos (move-object game direction player-pos)]
-      (if (collision? tiled-map "walls" new-pos)
+          new-pos (move-object game direction player-pos)
+          new-tiled-map (player-interactions game tiled-map direction new-pos)]
+      (if (or (collision? tiled-map "walls" new-pos) (false? new-tiled-map))
         new-state
-        (let [new-tiled-map (player-interactions game tiled-map direction new-pos)]
-          (if (false? new-tiled-map)
-            new-state
-            (assoc new-state :player-pos new-pos :tiled-map new-tiled-map)))))))
+        (assoc new-state :player-pos new-pos :tiled-map new-tiled-map)))))

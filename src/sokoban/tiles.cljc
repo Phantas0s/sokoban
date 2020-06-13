@@ -80,10 +80,12 @@
                            :map-height map-height}))))))
 
 (defn tile-from-layer [tiled-map layer]
+  "Get tiles from a layer name"
   (into {} (filter #(= (% :layer) layer) (:tiles tiled-map))))
 
-(defn tile-from-position [tiled-map layer-name pos]
-  (get-in (get (:layers tiled-map) layer-name) pos))
+(defn tile-from-position [tiled-map layer pos]
+  "Get a tile from a layer and a position"
+  (get-in (get (:layers tiled-map) layer) pos))
 
 (defn tile-id [tile-map tile]
   (.indexOf (:tiles tile-map) tile))
