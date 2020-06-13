@@ -1,7 +1,6 @@
 (ns sokoban.move
   (:require
    [sokoban.tiles :as ti]
-   [play-cljc.instances :as i]
    [clojure.pprint :refer [pprint]]))
 
 (def direction
@@ -11,6 +10,7 @@
    :down [0 1]})
 
 (defn in-context? [{:keys [context tile-width tile-height] :as game} [x y]]
+  "Verify if the position given is still in the game"
   (let [width (/ (-> context .-canvas .-width) tile-width)
         height (/ (-> context .-canvas .-height) tile-height)]
     (and (>= x 0) (>= y 0) (< x width) (< y height))))
@@ -22,7 +22,7 @@
   (some false? (map #(nil? (collision? tiled-map % new-pos)) layers)))
 
 (defn move-object
-  "Move any object, tile or image"
+  "Given a direction and a current position, return the new position"
   [game [dir-x dir-y] [obj-x obj-y]]
   (let [new-x (+ obj-x dir-x)
         new-y (+ obj-y dir-y)]

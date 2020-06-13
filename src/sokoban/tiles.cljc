@@ -2,15 +2,12 @@
   (:require
    [sokoban.utils :as utils]
    [play-cljc.transforms :as t]
-   [play-cljc.math :as m]
    [play-cljc.instances :as i]
    [clojure.pprint :refer [pprint]]
    [play-cljc.gl.core :as c]
    [play-cljc.gl.entities-2d :as e]
    #?@(:clj [[clojure.java.io :as io]
-             [tile-soup.core :as ts]])
-   #?(:clj  [play-cljc.macros-java :refer [math]]
-      :cljs [play-cljc.macros-js :refer-macros [math]])))
+             [tile-soup.core :as ts]])))
 
 #?(:clj (defmacro read-tiled-map [fname]
           (-> (str "public/" fname)
