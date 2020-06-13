@@ -22,6 +22,7 @@
   (some false? (map #(nil? (collision? tiled-map % new-pos)) layers)))
 
 (defn move-object
+  "Move any object, tile or image"
   [game [dir-x dir-y] [obj-x obj-y]]
   (let [new-x (+ obj-x dir-x)
         new-y (+ obj-y dir-y)]
@@ -29,20 +30,19 @@
       [new-x new-y]
       [obj-x obj-y])))
 
-(defn move-tile [game tiled-map layer direction tile prevent-move]
+(defn move-tile [game tiled-map tile layer direction prevent-move?]
+  "Moving a tile given a layer, a direction and a predicate to prevent moving"
   (let [tile-id (ti/tile-id tiled-map tile)
-        new-pos {:layer layer :pos (move-object game direction (:pos tile))}]
-    (if (prevent-move (:pos new-pos))
+        tile-moved {:layer layer :pos (move-object game direction (:pos tile))}]
+    (if (prevent-move? (:pos tile-moved))
       false
-      (-> tiled-map
-          (assoc-in [:layers layer (first (:pos tile)) (second (:pos tile))] nil)
-          (assoc-in [:layers layer (first (:pos new-pos)) (second (:pos new-pos))] new-pos)
-          (ti/move-tile-entity tile-id direction new-pos)))))
+      (ti/move-tile tiled-map tile layer tile-id direction tile-moved))))
 
 (defn player-interactions [game tiled-map direction new-player-pos]
+  "Everything the player can interact with"
   (let [box-tile (ti/tile-from-position tiled-map "boxes" new-player-pos)]
     (if (not-empty (collision? tiled-map "boxes" new-player-pos))
-      (move-tile game tiled-map "boxes" direction box-tile (fn [new-pos] (collisions? tiled-map ["walls" "boxes"] new-pos)))
+      (move-tile game tiled-map box-tile "boxes" direction (fn [new-pos] (collisions? tiled-map ["walls" "boxes"] new-pos)))
       tiled-map)))
 
 (defn player-move

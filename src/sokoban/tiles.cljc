@@ -24,6 +24,7 @@
   (let [tiles-vert (/ height tileheight)
         tiles-horiz (/ width tilewidth)]
     (vec
+     ; (map #(t/crop tileset (* %1 tilewidth) (* %2 tileheight) tilewidth tileheight) (vec (range tiles-horiz)) (vec (range tiles-vert)))
      (for [y (range tiles-vert)
            x (range tiles-horiz)]
        (t/crop tileset
@@ -81,8 +82,8 @@
                            :map-width map-width
                            :map-height map-height}))))))
 
-(defn tile-from-name [tiled-map tile-name]
-  (into {} (filter #(= (% :layer) tile-name) (:tiles tiled-map))))
+(defn tile-from-layer [tiled-map layer]
+  (into {} (filter #(= (% :layer) layer) (:tiles tiled-map))))
 
 (defn tile-from-position [tiled-map layer-name pos]
   (get-in (get (:layers tiled-map) layer-name) pos))
@@ -90,9 +91,12 @@
 (defn tile-id [tile-map tile]
   (.indexOf (:tiles tile-map) tile))
 
-(defn move-tile-entity [tiled-map tile-id [dir-x dir-y] new-pos]
+(defn move-tile [tiled-map tile layer tile-id [dir-x dir-y] tile-moved]
   (let [new-entities (into (conj (subvec (:entities tiled-map) 0 tile-id) (t/translate (nth (:entities tiled-map) tile-id) dir-x dir-y)) (subvec (:entities tiled-map) (inc tile-id)))]
-    (assoc tiled-map
-           :tiles (into (conj (subvec (:tiles tiled-map) 0 tile-id) new-pos) (subvec (:tiles tiled-map) (inc tile-id)))
-           :entities new-entities
-           :tile-map-entity (reduce-kv i/assoc (:tile-map-entity tiled-map) new-entities))))
+    (-> tiled-map (assoc-in [:layers layer (first (:pos tile)) (second (:pos tile))] nil)
+        (assoc-in [:layers layer (first (:pos tile-moved)) (second (:pos tile-moved))] tile-moved)
+        (assoc
+         :tiles (into (conj (subvec (:tiles tiled-map) 0 tile-id) tile-moved) (subvec (:tiles tiled-map) (inc tile-id)))
+         :entities new-entities
+         :tile-map-entity (reduce-kv i/assoc (:tile-map-entity tiled-map) new-entities)))))
+
