@@ -10,8 +10,9 @@
    :up [0 -1]
    :down [0 1]})
 
-(defn in-context? [{:keys [context tile-width tile-height] :as game} [x y]]
+(defn in-context?
   "Verify if the position given is still in the game"
+  [{:keys [context tile-width tile-height]} [x y]]
   (let [width (/ (-> context .-canvas .-width) tile-width)
         height (/ (-> context .-canvas .-height) tile-height)]
     (and (>= x 0) (>= y 0) (< x width) (< y height))))
@@ -36,19 +37,21 @@
     (t/translate (nth (:tilesheet tiled-map) 14) old-x old-y)
     (nth (:entities tiled-map) tile-id)))
 
-(defn move-tile [game tiled-map tile layer direction prevent-move? sprite]
+(defn move-tile
   "Moving a tile given a layer, a direction and a predicate to prevent moving"
+  [game tiled-map tile direction prevent-move? sprite]
   (let [tile-id (ti/tile-id tiled-map tile)
-        tile-moved {:layer layer :pos (move-object game direction (:pos tile))}]
+        tile-moved (assoc tile :pos (move-object game direction (:pos tile)))]
     (if (prevent-move? (:pos tile-moved))
       false
-      (ti/move-tile tiled-map tile layer tile-id direction tile-moved sprite))))
+      (ti/move-tile tiled-map tile tile-id direction tile-moved sprite))))
 
-(defn player-interactions [game tiled-map direction new-player-pos]
+(defn player-interactions
   "Everything the player can interact with"
+  [game tiled-map direction new-player-pos]
   (let [box-tile (ti/tile-from-position tiled-map "boxes" new-player-pos)]
     (if (not-empty (collision? tiled-map "boxes" new-player-pos))
-      (move-tile game tiled-map box-tile "boxes" direction (fn [new-pos] (collisions? tiled-map ["walls" "boxes"] new-pos)) (fn [new-pos tile-id] (change-box-sprite? tiled-map "goals" (:pos box-tile) new-pos tile-id)))
+      (move-tile game tiled-map box-tile direction (fn [new-pos] (collisions? tiled-map ["walls" "boxes"] new-pos)) (fn [new-pos tile-id] (change-box-sprite? tiled-map "goals" (:pos box-tile) new-pos tile-id)))
       tiled-map)))
 
 (defn player-move
@@ -56,8 +59,7 @@
   [game {:keys [tiled-map pressed-keys player-pos] :as state}]
   (if (empty? pressed-keys)
     state
-    (let [k (first pressed-keys)
-          direction (k direction)
+    (let [direction ((first pressed-keys) direction)
           new-state (assoc state :pressed-keys #{})
           new-pos (move-object game direction player-pos)
           new-tiled-map (player-interactions game tiled-map direction new-pos)]
