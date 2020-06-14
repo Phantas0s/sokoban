@@ -93,11 +93,12 @@
 (defn tile-id [tile-map tile]
   (.indexOf (:tiles tile-map) tile))
 
-(defn move-tile [tiled-map tile tile-id [dir-x dir-y] tile-moved change-sprite]
+(defn move-tile [tiled-map tile tile-id new-pos [dir-x dir-y] sprite]
   (let [layer (:layer tile)
         [old-x old-y] (:pos tile)
-        [new-x new-y] (:pos tile-moved)
-        new-entity (change-sprite (:pos tile-moved) tile-id)
+        [new-x new-y] new-pos
+        new-entity (sprite new-pos)
+        tile-moved (assoc tile :pos new-pos)
         new-entities (into (conj (subvec (:entities tiled-map) 0 tile-id) (t/translate new-entity dir-x dir-y)) (subvec (:entities tiled-map) (inc tile-id)))]
     (-> tiled-map
         (assoc-in [:layers layer old-x old-y] nil)
