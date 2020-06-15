@@ -1,6 +1,7 @@
 (ns sokoban.core
   (:require [sokoban.utils :as utils]
             [sokoban.move :as move]
+            [sokoban.collision :as coll]
             [sokoban.utils :as u]
             [play-cljc.gl.core :as c]
             [play-cljc.gl.entities-2d :as e]
@@ -15,7 +16,8 @@
 
 (defonce *state (atom {:pressed-keys #{}
                        :player-pos []
-                       :tiled-map nil
+                       :player-moves {}
+                       :tiled-map {}
                        :player-images {}}))
 
 (def tiled-map (edn/read-string (read-tiled-map "level1.tmx")))
@@ -63,16 +65,15 @@
                            assoc
                            :width width
                            :height height))
-
-    (when tile-map-entity
-      (c/render game (-> tile-map-entity
-                         (t/project width height)
-                         (t/scale tile-width tile-height))))
+    (c/render game (-> tile-map-entity
+                       (t/project width height)
+                       (t/scale tile-width tile-height)))
     (c/render game (-> player
                        (t/project width height)
                        (t/translate player-x-pix player-y-pix)
                        (t/scale tile-width tile-height)))
-    (swap! *state
-           (fn [state]
-             (->> state (move/player-move game))))
+    (->> state
+         (move/player-move game)
+         (coll/player-interactions game)
+         (reset! *state))
     game))
