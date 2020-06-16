@@ -2,12 +2,11 @@
   (:require [sokoban.utils :as utils]
             [sokoban.move :as move]
             [sokoban.collision :as coll]
-            [sokoban.utils :as u]
+            [sokoban.tiles :as ti]
             [play-cljc.gl.core :as c]
             [play-cljc.gl.entities-2d :as e]
             [play-cljc.transforms :as t]
             [clojure.pprint :refer [pprint]]
-            [play-cljc.instances :as i]
             [clojure.edn :as edn]
             #?(:clj  [play-cljc.macros-java :refer [gl math]]
                :cljs [play-cljc.macros-js :refer-macros [gl math]])
@@ -36,19 +35,22 @@
                                                         0
                                                         player-width
                                                         player-height) :width player-width :height player-height)))
-                           [image1] images]
-                       (swap! *state update :player-images assoc :image1 image1))))
+                           [image1] images
+                           player-start (into {} (filter #(= (% :layer) "player-start") (-> (:tiled-map @*state) :tiles)))]
+                       (swap! *state assoc
+                              :player-pos (:pos player-start)
+                              :player-images {:image1 image1}))))
   (tiles/load-tiled-map game tiled-map
                         (fn [tiled-map]
-                          (swap! *state assoc :tiled-map tiled-map)))
-  (let [player-start (into {} (filter #(= (% :layer) "player-start") (-> (:tiled-map @*state) :tiles)))]
-    (swap! *state assoc :player-pos (:pos player-start))))
+
+                          (swap! *state assoc :tiled-map tiled-map))))
 
 (def screen-entity
   {:viewport {:x 0 :y 0 :width 0 :height 0}
    :clear {:color [(/ 255 255) (/ 255 255) (/ 255 255) 1] :depth 1}})
 
-; need to export tileset with image (preference in tiled)
+(defn win? [layers {:keys [tiled-map]}]
+  (ti/all-same-pos layers tiled-map))
 
 (defn tick [game] game
   (let [{:keys [player-pos
@@ -60,7 +62,7 @@
         tile-width (-> game :tile-width)
         tile-height (-> game :tile-height)
         tile-map-entity (:tile-map-entity tiled-map)
-        [player-x-pix player-y-pix] (u/pos->pixel game player-pos)]
+        [player-x-pix player-y-pix] (utils/pos->pixel game player-pos)]
     (c/render game (update screen-entity :viewport
                            assoc
                            :width width

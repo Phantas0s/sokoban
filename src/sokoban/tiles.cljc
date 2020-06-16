@@ -82,9 +82,9 @@
                            :map-width map-width
                            :map-height map-height}))))))
 
-(defn tile-from-layer [tiled-map layer]
-  "Get tiles from a layer name"
-  (into {} (filter #(= (% :layer) layer) (:tiles tiled-map))))
+(defn tile-from-layer
+  [tiled-map layer]
+  (map :pos (filter #(= (:layer %) layer) (:tiles tiled-map))))
 
 (defn tile-from-position [tiled-map layer pos]
   "Get a tile from a layer and a position"
@@ -92,6 +92,9 @@
 
 (defn tile-id [tile-map tile]
   (.indexOf (:tiles tile-map) tile))
+
+(defn all-same-pos [layers tiled-map]
+  (pprint (map #(tile-from-layer tiled-map %) layers)))
 
 (defn move-tile [tiled-map tile tile-id new-pos [dir-x dir-y] sprite]
   (let [layer (:layer tile)
