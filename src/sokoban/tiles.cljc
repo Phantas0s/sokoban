@@ -84,7 +84,11 @@
 
 (defn tile-from-layer
   [tiled-map layer]
-  (map :pos (filter #(= (:layer %) layer) (:tiles tiled-map))))
+  (filter #(= (:layer %) layer) (:tiles tiled-map)))
+
+(defn same-position
+  [tiled-map pos]
+  (filter #(= (:pos %) pos) (:tiles tiled-map)))
 
 (defn tile-from-position [tiled-map layer pos]
   "Get a tile from a layer and a position"

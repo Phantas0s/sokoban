@@ -50,7 +50,7 @@
    :clear {:color [(/ 255 255) (/ 255 255) (/ 255 255) 1] :depth 1}})
 
 (defn win? [layers {:keys [tiled-map]}]
-  (ti/all-same-pos layers tiled-map))
+  (pprint (ti/tile-from-layer tiled-map "boxes")))
 
 (defn tick [game] game
   (let [{:keys [player-pos
@@ -77,5 +77,6 @@
     (->> state
          (move/player-move game)
          (coll/player-interactions game)
-         (reset! *state))
+         (reset! *state)
+         (win? ["boxes"]))
     game))
