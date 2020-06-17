@@ -86,9 +86,15 @@
   [tiled-map layer]
   (filter #(= (:layer %) layer) (:tiles tiled-map)))
 
-(defn same-position
-  [tiled-map pos]
-  (filter #(= (:pos %) pos) (:tiles tiled-map)))
+; TODO this SHOULD be decomposed but I'm kind of proud of it :D
+(defn same-position?
+  [tiled-map layers]
+  (let [tiles (flatten (map (fn [layer] (filter (fn [tile] (= (:layer tile) layer)) (:tiles tiled-map))) layers))]
+    (= (/ (count tiles) (count layers)) (count (reduce (fn [v m] (conj v (:pos m))) #{} tiles)))))
+
+; (defn same-position?
+;   [tiled-map pos]
+;   (filter #(= (:pos %) pos) (:tiles tiled-map)))
 
 (defn tile-from-position [tiled-map layer pos]
   "Get a tile from a layer and a position"
@@ -96,9 +102,6 @@
 
 (defn tile-id [tile-map tile]
   (.indexOf (:tiles tile-map) tile))
-
-(defn all-same-pos [layers tiled-map]
-  (pprint (map #(tile-from-layer tiled-map %) layers)))
 
 (defn move-tile [tiled-map tile tile-id new-pos [dir-x dir-y] sprite]
   (let [layer (:layer tile)

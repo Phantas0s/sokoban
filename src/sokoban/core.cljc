@@ -42,15 +42,16 @@
                               :player-images {:image1 image1}))))
   (tiles/load-tiled-map game tiled-map
                         (fn [tiled-map]
-
                           (swap! *state assoc :tiled-map tiled-map))))
 
 (def screen-entity
   {:viewport {:x 0 :y 0 :width 0 :height 0}
    :clear {:color [(/ 255 255) (/ 255 255) (/ 255 255) 1] :depth 1}})
 
-(defn win? [layers {:keys [tiled-map]}]
-  (pprint (ti/tile-from-layer tiled-map "boxes")))
+(defn win? [{:keys [tiled-map] :as state}]
+  (if (ti/same-position? tiled-map ["boxes" "goals"])
+    (pprint "WIIINNN")
+    state))
 
 (defn tick [game] game
   (let [{:keys [player-pos
@@ -77,6 +78,6 @@
     (->> state
          (move/player-move game)
          (coll/player-interactions game)
-         (reset! *state)
-         (win? ["boxes"]))
+         (win?)
+         (reset! *state))
     game))
