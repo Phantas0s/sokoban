@@ -17,12 +17,12 @@
 
 (def level-1 (read-tiled-map "level1.tmx"))
 (def level-2 (read-tiled-map "level2.tmx"))
-; (def level-3 (read-tiled-map "level3.tmx"))
+(def level-3 (read-tiled-map "level3.tmx"))
 
 (defonce *state (atom {:pressed-keys #{}
                        :player-pos []
                        :level 0
-                       :levels (vector level-1 level-2)
+                       :levels (vector level-1 level-2 level-3)
                        :player-moves {}
                        :tiled-map {}
                        :player-images {}}))
@@ -31,10 +31,13 @@
   (edn/read-string level))
 
 (defn load-level [game {:keys [level levels] :as state}]
+  (pprint level)
   (tiles/load-tiled-map game (read-level (nth levels level))
                         (fn [tiled-map]
                           (let [player-start (into {} (filter #(= (% :layer) "player-start") (-> tiled-map :tiles)))]
-                            (swap! *state assoc :tiled-map tiled-map
+                            (swap! *state assoc
+                                   :level level
+                                   :tiled-map tiled-map
                                    :player-pos (:pos player-start))))))
 
 (defn init [game]
@@ -62,7 +65,7 @@
 
 (defn win? [game {:keys [tiled-map level levels] :as state}]
   (if (ti/same-position? tiled-map ["boxes" "goals"])
-    (load-level game state)
+    (do (load-level game (assoc state :level (inc level))) @*state)
     state))
 
 (defn tick [game] game
@@ -90,6 +93,6 @@
     (->> state
          (move/player-move game)
          (coll/player-interactions game)
-         (reset! *state)
-         (win? game))
+         (win? game)
+         (reset! *state))
     game))
