@@ -32,9 +32,9 @@
                tilewidth
                tileheight)))))
 
-(defn load-tiled-map [game parsed callback]
+(defn load-tiled-map
   "Parse a map (tmx) from the tiled software"
-  (pprint parsed)
+  [game parsed callback]
   (let [map-width (-> parsed :attrs :width) ; number of tiles
         map-height (-> parsed :attrs :height) ; number of tiles
         tileset (first (filter #(= :tileset (:tag %)) (:content parsed)))
@@ -70,7 +70,7 @@
                               {:layers {}
                                :tiles []
                                :entities []}
-                              ["background" "walls" "boxes" "goals" "player-start"])
+                              ["background" "goals" "walls"  "boxes" "player-start"])
                              entity (i/->instanced-entity entity)
                              entity (c/compile game entity)
                              entity (reduce-kv i/assoc entity entities)]
@@ -93,12 +93,9 @@
   (let [tiles (flatten (map (fn [layer] (filter (fn [tile] (= (:layer tile) layer)) (:tiles tiled-map))) layers))]
     (= (/ (count tiles) (count layers)) (count (reduce (fn [v m] (conj v (:pos m))) #{} tiles)))))
 
-; (defn same-position?
-;   [tiled-map pos]
-;   (filter #(= (:pos %) pos) (:tiles tiled-map)))
-
-(defn tile-from-position [tiled-map layer pos]
+(defn tile-from-position
   "Get a tile from a layer and a position"
+  [tiled-map layer pos]
   (get-in (get (:layers tiled-map) layer) pos))
 
 (defn tile-id [tile-map tile]

@@ -20,6 +20,14 @@
   [k]
   (get (js->clj goog.events.KeyCodes :keywordize-keys true) k))
 
+(defn keycode->keyword [keycode]
+  (condp = keycode
+    (keycodes :LEFT) :left
+    (keycodes :RIGHT) :right
+    (keycodes :UP) :up
+    (keycodes :DOWN) :down
+    nil))
+
 (defn game-loop [game]
   (let [game (c/tick game)]
     (js/requestAnimationFrame
@@ -28,14 +36,6 @@
          (game-loop (assoc game
                            :delta-time (- ts (:total-time game))
                            :total-time ts)))))))
-
-(defn keycode->keyword [keycode]
-  (condp = keycode
-    (keycodes :LEFT) :left
-    (keycodes :RIGHT) :right
-    (keycodes :UP) :up
-    (keycodes :DOWN) :down
-    nil))
 
 (defn listen-for-keys []
   (events/listen js/window "keydown"

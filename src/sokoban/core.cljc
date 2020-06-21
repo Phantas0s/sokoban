@@ -20,7 +20,10 @@
 (defonce *state (atom {:pressed-keys #{}
                        :player-pos []
                        :level 0
-                       :levels (vector level-1 level-2 level-3)
+                       :levels (vector
+                                level-1
+                                level-2
+                                level-3)
                        :player-moves {}
                        :tiled-map {}
                        :player-images {}}))
@@ -81,17 +84,18 @@
                            assoc
                            :width width
                            :height height))
-    (c/render game (-> (:tile-map-entity tiled-map)
-                       (t/project width height)
-                       (t/translate map-x map-y)
-                       (t/scale tile-width tile-height)))
-    (c/render game (-> player
-                       (t/project width height)
-                       (t/translate (+ player-x-pix map-x) (+ player-y-pix map-y))
-                       (t/scale tile-width tile-height)))
-    (->> state
-         (move/player-move game)
-         (coll/player-interactions game)
-         (win? game)
-         (reset! *state))
+    (when (seq tiled-map)
+      (c/render game (-> (:tile-map-entity tiled-map)
+                         (t/project width height)
+                         (t/translate map-x map-y)
+                         (t/scale tile-width tile-height)))
+      (c/render game (-> player
+                         (t/project width height)
+                         (t/translate (+ player-x-pix map-x) (+ player-y-pix map-y))
+                         (t/scale tile-width tile-height)))
+      (->> state
+           (move/player-move game)
+           (coll/player-interactions game)
+           (win? game)
+           (reset! *state)))
     game))
