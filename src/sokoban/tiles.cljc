@@ -34,6 +34,7 @@
 
 (defn load-tiled-map [game parsed callback]
   "Parse a map (tmx) from the tiled software"
+  (pprint parsed)
   (let [map-width (-> parsed :attrs :width) ; number of tiles
         map-height (-> parsed :attrs :height) ; number of tiles
         tileset (first (filter #(= :tileset (:tag %)) (:content parsed)))

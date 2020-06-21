@@ -3,8 +3,6 @@
             [sokoban.move :as move]
             [sokoban.collision :as coll]
             [sokoban.tiles :as ti]
-            #?(:cljs [cljs.reader :refer [read-string]]
-               :clj [clojure.core :refer [read-string]])
             [play-cljc.gl.core :as c]
             [play-cljc.gl.entities-2d :as e]
             [play-cljc.transforms :as t]
@@ -31,7 +29,6 @@
   (edn/read-string level))
 
 (defn load-level [game {:keys [level levels] :as state}]
-  (pprint level)
   (tiles/load-tiled-map game (read-level (nth levels level))
                         (fn [tiled-map]
                           (let [player-start (into {} (filter #(= (% :layer) "player-start") (-> tiled-map :tiles)))]
@@ -63,10 +60,10 @@
   {:viewport {:x 0 :y 0 :width 0 :height 0}
    :clear {:color [(/ 255 255) (/ 255 255) (/ 255 255) 1] :depth 1}})
 
-(defn win? [game {:keys [tiled-map level levels] :as state}]
+(defn win? [game {:keys [tiled-map level] :as state}]
   (if (ti/same-position? tiled-map ["boxes" "goals"])
-    (do (load-level game (assoc state :level (inc level))) @*state)
-    state))
+    (load-level game (assoc state :level (inc level))) @*state)
+  state)
 
 (defn tick [game] game
   (let [{:keys [player-pos
@@ -77,18 +74,20 @@
         height (-> game :context .-canvas .-height)
         tile-width (-> game :tile-width)
         tile-height (-> game :tile-height)
-        tile-map-entity (:tile-map-entity tiled-map)
+        map-x (/ (- width (* (:map-width tiled-map) tile-width)) 2)
+        map-y (/ (- height (* (:map-height tiled-map) tile-width)) 2)
         [player-x-pix player-y-pix] (utils/pos->pixel game player-pos)]
     (c/render game (update screen-entity :viewport
                            assoc
                            :width width
                            :height height))
-    (c/render game (-> tile-map-entity
+    (c/render game (-> (:tile-map-entity tiled-map)
                        (t/project width height)
+                       (t/translate map-x map-y)
                        (t/scale tile-width tile-height)))
     (c/render game (-> player
                        (t/project width height)
-                       (t/translate player-x-pix player-y-pix)
+                       (t/translate (+ player-x-pix map-x) (+ player-y-pix map-y))
                        (t/scale tile-width tile-height)))
     (->> state
          (move/player-move game)
