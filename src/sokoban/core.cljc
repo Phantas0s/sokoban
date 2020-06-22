@@ -8,8 +8,8 @@
             [play-cljc.transforms :as t]
             [clojure.pprint :refer [pprint]]
             [clojure.edn :as edn]
-            #?(:clj  [play-cljc.macros-java :refer [gl math]]
-               :cljs [play-cljc.macros-js :refer-macros [gl math]])
+            #?(:clj  [play-cljc.macros-java :refer [gl]]
+               :cljs [play-cljc.macros-js :refer-macros [gl]])
             #?(:clj  [sokoban.tiles :as tiles :refer [read-tiled-map]]
                :cljs [sokoban.tiles :as tiles :refer-macros [read-tiled-map]])))
 

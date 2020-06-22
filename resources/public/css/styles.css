@@ -1,0 +1,9 @@
+section {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+canvas {
+    margin: auto;
+    border: 1px solid black;
+}
