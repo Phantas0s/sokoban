@@ -26,6 +26,7 @@
     (keycodes :RIGHT) :right
     (keycodes :UP) :up
     (keycodes :DOWN) :down
+    (keycodes :BACKSPACE) :backspace
     nil))
 
 (defn game-loop [game]

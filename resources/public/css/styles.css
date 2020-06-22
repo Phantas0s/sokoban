@@ -1,3 +1,7 @@
+body {
+    background-color:#121212;
+}
+
 section {
     display: flex;
     flex-direction: row;

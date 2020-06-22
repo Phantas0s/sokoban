@@ -3,6 +3,7 @@
             [sokoban.move :as move]
             [sokoban.collision :as coll]
             [sokoban.tiles :as ti]
+            [clojure.data :refer [diff]]
             [play-cljc.gl.core :as c]
             [play-cljc.gl.entities-2d :as e]
             [play-cljc.transforms :as t]
@@ -27,6 +28,8 @@
                        :player-moves {}
                        :tiled-map {}
                        :player-images {}}))
+
+(defonce *history (atom []))
 
 (defn read-level [level]
   (edn/read-string level))
@@ -61,12 +64,24 @@
 
 (def screen-entity
   {:viewport {:x 0 :y 0 :width 0 :height 0}
-   :clear {:color [(/ 255 255) (/ 255 255) (/ 255 255) 1] :depth 1}})
+   :clear {:color [(/ 56 255) (/ 56 255) (/ 56 255) 1] :depth 1}})
 
 (defn win? [game {:keys [tiled-map level] :as state}]
   (if (ti/same-position? tiled-map ["boxes" "goals"])
     (load-level game (assoc state :level (inc level))) @*state)
   state)
+
+(defn update-history! [state]
+  (when-not (= (:player-pos (last @*history)) (:player-pos state))
+    (println (:player-pos (last @*history)) (:player-pos state))
+    (swap! *history conj state)
+    (pprint (count @*history)))
+  state)
+
+(defn get-state [{:keys [pressed-keys] :as state}]
+  (if (and (some #(= :backspace %) pressed-keys) (> (count @*history) 2))
+    (do (swap! *history drop-last) (last @*history))
+    state))
 
 (defn tick [game] game
   (let [{:keys [player-pos
@@ -93,9 +108,10 @@
                          (t/project width height)
                          (t/translate (+ player-x-pix map-x) (+ player-y-pix map-y))
                          (t/scale tile-width tile-height)))
-      (->> state
+      (->> (get-state state)
            (move/player-move game)
            (coll/player-interactions game)
            (win? game)
+           (update-history!)
            (reset! *state)))
     game))
