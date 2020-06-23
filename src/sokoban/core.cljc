@@ -34,7 +34,7 @@
 (defn read-level [level]
   (edn/read-string level))
 
-(defn load-level [game {:keys [level levels] :as state}]
+(defn load-level! [game {:keys [level levels] :as state}]
   (tiles/load-tiled-map game (read-level (nth levels level))
                         (fn [tiled-map]
                           (let [player-start (into {} (filter #(= (% :layer) "player-start") (-> tiled-map :tiles)))]
@@ -60,27 +60,28 @@
                            [image1] images]
                        (swap! *state assoc
                               :player-images {:image1 image1}))))
-  (load-level game @*state))
+  (load-level! game @*state))
 
 (def screen-entity
   {:viewport {:x 0 :y 0 :width 0 :height 0}
    :clear {:color [(/ 56 255) (/ 56 255) (/ 56 255) 1] :depth 1}})
 
-(defn win? [game {:keys [tiled-map level] :as state}]
+(defn verify-win [game {:keys [tiled-map level] :as state}]
   (if (ti/same-position? tiled-map ["boxes" "goals"])
-    (load-level game (assoc state :level (inc level))) @*state)
+    (do
+      (load-level! game (assoc state :level (inc level)))
+      (reset! *history []))
+    @*state)
   state)
 
 (defn update-history! [state]
   (when-not (= (:player-pos (last @*history)) (:player-pos state))
-    (println (:player-pos (last @*history)) (:player-pos state))
-    (swap! *history conj state)
-    (pprint (count @*history)))
+    (swap! *history conj state))
   state)
 
 (defn get-state [{:keys [pressed-keys] :as state}]
   (if (and (some #(= :backspace %) pressed-keys) (> (count @*history) 2))
-    (do (swap! *history drop-last) (last @*history))
+    (do (swap! *history pop) (last @*history))
     state))
 
 (defn tick [game] game
@@ -111,7 +112,7 @@
       (->> (get-state state)
            (move/player-move game)
            (coll/player-interactions game)
-           (win? game)
+           (verify-win game)
            (update-history!)
            (reset! *state)))
     game))
