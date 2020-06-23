@@ -3,7 +3,6 @@
             [sokoban.move :as move]
             [sokoban.collision :as coll]
             [sokoban.tiles :as ti]
-            [clojure.data :refer [diff]]
             [play-cljc.gl.core :as c]
             [play-cljc.gl.entities-2d :as e]
             [play-cljc.transforms :as t]
@@ -63,8 +62,11 @@
   (load-level! game @*state))
 
 (def screen-entity
-  {:viewport {:x 0 :y 0 :width 0 :height 0}
-   :clear {:color [(/ 56 255) (/ 56 255) (/ 56 255) 1] :depth 1}})
+  {:viewport {:x 0 :y 0 :width 0 :height 0}})
+
+; TODO we can avoid all these swap / reset if states and history are in a higher level map
+; (atom {:states :history})
+
 
 (defn verify-win [game {:keys [tiled-map level] :as state}]
   (if (ti/same-position? tiled-map ["boxes" "goals"])

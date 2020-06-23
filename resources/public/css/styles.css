@@ -1,13 +1,44 @@
+@import "variables.css"; 
+
 body {
-    background-color:#121212;
+    background-color: var(--background);
+    color: var(--color);
 }
 
-section {
+h1 {
+    text-align: center;
+}
+
+#main {
     display: flex;
     flex-direction: row;
-    align-items: center;
+  justify-content: center;
+  }
+
+#game {
+    display: flex;
+    flex-direction: column;
+    align-items: right;
 }
+
+#hud {
+    display: flex;
+    flex-direction: column;
+    align-items: right;
+}
+
+.size-l {
+    width: 75%;
+}
+
+.size-m {
+    width: 50%;
+}
+
+.size-s {
+    width: 25%;
+}
+
 canvas {
-    margin: auto;
-    border: 1px solid black;
+    border: 1px solid var(--border);
 }

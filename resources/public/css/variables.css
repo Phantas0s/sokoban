@@ -1,0 +1,8 @@
+:root {
+    --background: #121212;
+    --border: #ffffff;
+    --color: #ffffff;
+}
+
+[data-theme="light"] {
+}
