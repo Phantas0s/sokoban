@@ -31,5 +31,8 @@
     state
     (let [direction ((first pressed-keys) direction)
           new-pos (move-object game direction player-pos)]
-      (assoc state :pressed-keys #{} :player-moves {:pos player-pos :new-pos new-pos :direction direction}))))
-; )
+      (assoc state
+             :pressed-keys #{}
+             :player-moves {:pos player-pos
+                            :new-pos new-pos
+                            :direction direction}))))

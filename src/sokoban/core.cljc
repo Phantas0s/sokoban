@@ -2,6 +2,7 @@
   (:require [sokoban.utils :as utils]
             [sokoban.move :as move]
             [sokoban.collision :as coll]
+            [sokoban.hud :as hud]
             [sokoban.tiles :as ti]
             [play-cljc.gl.core :as c]
             [play-cljc.gl.entities-2d :as e]
@@ -116,5 +117,6 @@
            (coll/player-interactions game)
            (verify-win game)
            (update-history!)
-           (reset! *state)))
+           (reset! *state)
+           (hud/update-hud!)))
     game))
