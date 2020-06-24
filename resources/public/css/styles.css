@@ -9,6 +9,11 @@ h1 {
     text-align: center;
 }
 
+canvas {
+    background-color: var(--background);
+    border: 1px solid var(--border);
+}
+
 #main {
     display: flex;
     flex-direction: row;
@@ -25,20 +30,32 @@ h1 {
     display: flex;
     flex-direction: column;
     align-items: right;
+    border: 1px solid var(--border);
+    margin-left: 1em;
+}
+
+.hud-cell {
+    margin: 1em;
+}
+
+.size-xxl {
+    font-size: 3em;
+}
+
+.size-xl {
+    font-size: 2em;
 }
 
 .size-l {
-    width: 75%;
+    font-size: 1.5em;
 }
 
 .size-m {
-    width: 50%;
+    font-size: 1em;
 }
 
 .size-s {
-    width: 25%;
+    font-size: 0.5em;
 }
 
-canvas {
-    border: 1px solid var(--border);
-}
+
