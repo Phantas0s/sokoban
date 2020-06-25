@@ -1,12 +1,43 @@
 @import "variables.css"; 
 
+@font-face {
+    font-family: 'oxygen1';
+    font-display: swap;
+    src: local('oxygen1'), local('OXYGENE1'), url('../fonts/OXYGENE1.TTF') format('truetype');
+    font-weight: normal; font-style: normal;
+}
+
+@font-face {
+    font-family: 'LadyRadical';
+    font-display: swap;
+    src: local('LadyRadical'), local('LadyRadical'), url('../fonts/LadyRadical.ttf') format('truetype');
+    font-weight: normal; font-style: normal;
+}
+
+@font-face {
+    font-family: 'saturno';
+    font-display: swap;
+    src: local('saturno'), local('saturno'), url('../fonts/saturno.ttf') format('truetype');
+    font-weight: normal; font-style: normal;
+}
+
+@font-face {
+    font-family: 'arcade';
+    font-display: swap;
+    src: local('arcade'), local('arcade'), url('../fonts/ARCADE.TTF') format('truetype');
+    font-weight: normal; font-style: normal;
+}
+
 body {
+    font-family: "arcade","arial","sans-serif";
     background-color: var(--background);
     color: var(--color);
+    font-size: 2em;
 }
 
 h1 {
     text-align: center;
+    font-family: "saturno","arial","sans-serif";
 }
 
 canvas {
@@ -32,6 +63,10 @@ canvas {
     align-items: right;
     border: 1px solid var(--border);
     margin-left: 1em;
+}
+
+#hud-level {
+    text-align: center;
 }
 
 .hud-cell {

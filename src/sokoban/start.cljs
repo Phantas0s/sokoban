@@ -4,8 +4,8 @@
             [goog.events.KeyCodes]
             [goog.events :as events]))
 
-(def canvas-width 400)
-(def canvas-height 400)
+(def canvas-width 800)
+(def canvas-height 800)
 (def tile-width 32)
 (def tile-height 32)
 

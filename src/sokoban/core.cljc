@@ -14,17 +14,15 @@
             #?(:clj  [sokoban.tiles :as tiles :refer [read-tiled-map]]
                :cljs [sokoban.tiles :as tiles :refer-macros [read-tiled-map]])))
 
-(def level-1 (read-tiled-map "level1.tmx"))
-(def level-2 (read-tiled-map "level2.tmx"))
-(def level-3 (read-tiled-map "level3.tmx"))
+(def level-1 (read-tiled-map "levels/level1.tmx"))
+(def level-2 (read-tiled-map "levels/level2.tmx"))
+(def level-3 (read-tiled-map "levels/level3.tmx"))
+(def level-4 (read-tiled-map "levels/level4.tmx"))
 
 (defonce *state (atom {:pressed-keys #{}
                        :player-pos []
-                       :level 0
-                       :levels (vector
-                                level-1
-                                level-2
-                                level-3)
+                       :level 1
+                       :levels (vector level-1 level-2 level-3 level-4)
                        :player-moves {}
                        :tiled-map {}
                        :player-images {}}))
@@ -35,7 +33,7 @@
   (edn/read-string level))
 
 (defn load-level! [game {:keys [level levels] :as state}]
-  (tiles/load-tiled-map game (read-level (nth levels level))
+  (tiles/load-tiled-map game (read-level (nth levels (- level 1)))
                         (fn [tiled-map]
                           (let [player-start (into {} (filter #(= (% :layer) "player-start") (-> tiled-map :tiles)))]
                             (swap! *state assoc
@@ -115,8 +113,8 @@
       (->> (get-state state)
            (move/player-move game)
            (coll/player-interactions game)
-           (verify-win game)
            (update-history!)
            (reset! *state)
+           (verify-win game)
            (hud/update-hud!)))
     game))
