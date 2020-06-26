@@ -22,9 +22,10 @@
 (defonce *state (atom {:pressed-keys #{}
                        :player-pos []
                        :level 1
-                       :levels (vector level-1 level-2 level-3 level-4)
+                       :levels [level-1 level-2 level-3 level-4]
                        :player-moves {}
                        :tiled-map {}
+                       :player-image-key :down
                        :player-images {}}))
 
 (defonce *history (atom []))
@@ -44,7 +45,7 @@
 (defn init [game]
   (gl game enable (gl game BLEND))
   (gl game blendFunc (gl game SRC_ALPHA) (gl game ONE_MINUS_SRC_ALPHA))
-  (utils/get-image "character.png"
+  (utils/get-image "simple-character.png"
                    (fn [{:keys [data width height]}]
                      (let [entity (c/compile game (e/->image-entity game data width height))
                            player-width (-> game :tile-width)
@@ -55,9 +56,9 @@
                                                         0
                                                         player-width
                                                         player-height) :width player-width :height player-height)))
-                           [image1] images]
+                           [down up left right] images]
                        (swap! *state assoc
-                              :player-images {:image1 image1}))))
+                              :player-images {:down down :left left :up up :right right}))))
   (load-level! game @*state))
 
 (def screen-entity
@@ -67,7 +68,7 @@
 ; (atom {:states :history})
 
 
-(defn verify-win [game {:keys [tiled-map level] :as state}]
+(defn verify-win! [game {:keys [tiled-map level] :as state}]
   (if (ti/same-position? tiled-map ["boxes" "goals"])
     (do
       (load-level! game (assoc state :level (inc level)))
@@ -81,15 +82,17 @@
   state)
 
 (defn get-state [{:keys [pressed-keys] :as state}]
-  (if (and (some #(= :backspace %) pressed-keys) (> (count @*history) 2))
-    (do (swap! *history pop) (last @*history))
-    state))
+  (let [history @*history]
+    (if (and (some #(= :backspace %) pressed-keys) (>= (count history) 2))
+      (last (swap! *history pop))
+      (do (pprint (:player-pos state)) state))))
 
 (defn tick [game] game
   (let [{:keys [player-pos
                 player-images
+                player-image-key
                 tiled-map] :as state} @*state
-        player (:image1 player-images)
+        player (get player-images player-image-key)
         width (-> game :context .-canvas .-width)
         height (-> game :context .-canvas .-height)
         tile-width (-> game :tile-width)
@@ -115,6 +118,6 @@
            (coll/player-interactions game)
            (update-history!)
            (reset! *state)
-           (verify-win game)
+           (verify-win! game)
            (hud/update-hud!)))
     game))

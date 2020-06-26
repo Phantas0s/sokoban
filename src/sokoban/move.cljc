@@ -29,10 +29,12 @@
   [game {:keys [tiled-map pressed-keys player-pos] :as state}]
   (if (empty? pressed-keys)
     state
-    (let [direction ((first pressed-keys) direction)
+    (let [k (first pressed-keys)
+          direction (k direction)
           new-pos (move-object game direction player-pos)]
       (assoc state
              :pressed-keys #{}
+             :player-image-key k
              :player-moves {:pos player-pos
                             :new-pos new-pos
                             :direction direction}))))
