@@ -27,18 +27,20 @@
                        :tiled-map {}
                        :player-image-key :down
                        :player-images {}}))
-
 (defonce *history (atom []))
 
 (defn read-level [level]
   (edn/read-string level))
 
 (defn load-level! [game {:keys [level levels] :as state}]
+  (reset! *history [])
   (tiles/load-tiled-map game (read-level (nth levels (- level 1)))
                         (fn [tiled-map]
                           (let [player-start (into {} (filter #(= (% :layer) "player-start") (-> tiled-map :tiles)))]
                             (swap! *state assoc
                                    :level level
+                                   :player-moves {}
+                                   :pressed-keys #{}
                                    :tiled-map tiled-map
                                    :player-pos (:pos player-start))))))
 
@@ -70,9 +72,7 @@
 
 (defn verify-win! [game {:keys [tiled-map level] :as state}]
   (if (ti/same-position? tiled-map ["boxes" "goals"])
-    (do
-      (load-level! game (assoc state :level (inc level)))
-      (reset! *history []))
+    (load-level! game (assoc state :level (inc level)))
     @*state)
   state)
 
@@ -85,14 +85,14 @@
   (let [history @*history]
     (if (and (some #(= :backspace %) pressed-keys) (>= (count history) 2))
       (last (swap! *history pop))
-      (do (pprint (:player-pos state)) state))))
+      state)))
 
 (defn tick [game] game
   (let [{:keys [player-pos
                 player-images
                 player-image-key
                 tiled-map] :as state} @*state
-        player (get player-images player-image-key)
+        player (get player-images player-image-key (:down player-images))
         width (-> game :context .-canvas .-width)
         height (-> game :context .-canvas .-height)
         tile-width (-> game :tile-width)

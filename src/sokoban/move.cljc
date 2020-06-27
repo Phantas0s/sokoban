@@ -34,7 +34,7 @@
           new-pos (move-object game direction player-pos)]
       (assoc state
              :pressed-keys #{}
-             :player-image-key k
+             :player-image-key (when direction k)
              :player-moves {:pos player-pos
                             :new-pos new-pos
                             :direction direction}))))
