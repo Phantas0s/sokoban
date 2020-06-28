@@ -70,7 +70,7 @@
                               {:layers {}
                                :tiles []
                                :entities []}
-                              ["background" "goals" "walls"  "boxes" "player-start"])
+                              ["background" "player-start" "goals" "walls"  "boxes"])
                              entity (i/->instanced-entity entity)
                              entity (c/compile game entity)
                              entity (reduce-kv i/assoc entity entities)]

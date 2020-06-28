@@ -83,9 +83,9 @@
 
 (defn get-state [{:keys [pressed-keys] :as state}]
   (let [history @*history]
-    (if (and (some #(= :backspace %) pressed-keys) (>= (count history) 2))
-      (last (swap! *history pop))
-      state)))
+    (cond (and (some #(= :backspace %) pressed-keys) (>= (count history) 2)) (last (swap! *history pop))
+          (and (some #(= :restart %) pressed-keys) (>= (count history) 2))  (first (swap! *history vec (first history)))
+          :else state)))
 
 (defn tick [game] game
   (let [{:keys [player-pos
