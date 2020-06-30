@@ -49,16 +49,20 @@
                    (when-let [k (keycode->keyword (.-keyCode event))]
                      (swap! c/*state update :pressed-keys disj k)))))
 
-(def context
-  (let [canvas (js/document.querySelector "canvas")
-        context (.getContext canvas "webgl2")
-        initial-game (assoc (pc/->game context)
+(defn start-game [context]
+  (let [initial-game (assoc (pc/->game context)
                             :tile-width tile-width
                             :tile-height tile-height
                             :delta-time 0
                             :total-time (msec->sec (js/performance.now)))]
-    (listen-for-keys)
-    (resize context)
     (c/init initial-game)
     (game-loop initial-game)
     context))
+
+(defonce context
+  (let [canvas (js/document.querySelector "canvas")
+        context (.getContext canvas "webgl2")]
+    (listen-for-keys)
+    (resize context)
+    (start-game context)))
+
