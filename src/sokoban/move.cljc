@@ -27,14 +27,12 @@
 (defn player-move
   "Moving the player is the base of all interactions in the game"
   [game {:keys [tiled-map pressed-keys player-pos] :as state}]
-  (if (empty? pressed-keys)
+  (if (or (empty? pressed-keys) (empty? (get direction (first pressed-keys))))
     state
-    (let [k (first pressed-keys)
-          direction (k direction)
-          new-pos (move-object game direction player-pos)]
+    (let [direction (get direction (first pressed-keys))]
       (assoc state
              :pressed-keys #{}
-             :player-image-key (when direction k)
+             :player-image-key (first pressed-keys)
              :player-moves {:pos player-pos
-                            :new-pos new-pos
+                            :new-pos (move-object game direction player-pos)
                             :direction direction}))))

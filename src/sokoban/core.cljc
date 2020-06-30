@@ -81,10 +81,10 @@
     (swap! *history conj state))
   state)
 
-(defn get-state [{:keys [pressed-keys] :as state}]
+(defn get-state! [{:keys [pressed-keys] :as state}]
   (let [history @*history]
     (cond (and (some #(= :backspace %) pressed-keys) (>= (count history) 2)) (last (swap! *history pop))
-          (and (some #(= :restart %) pressed-keys) (>= (count history) 2))  (first (swap! *history vec (first history)))
+          (and (some #(= :restart %) pressed-keys) (>= (count history) 2))  (first (reset! *history (vector (first history))))
           :else state)))
 
 (defn tick [game] game
@@ -113,7 +113,7 @@
                          (t/project width height)
                          (t/translate (+ player-x-pix map-x) (+ player-y-pix map-y))
                          (t/scale tile-width tile-height)))
-      (->> (get-state state)
+      (->> (get-state! state)
            (move/player-move game)
            (coll/player-interactions game)
            (update-history!)
