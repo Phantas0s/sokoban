@@ -9,14 +9,12 @@
    #?@(:clj [[clojure.java.io :as io]
              [tile-soup.core :as ts]])))
 
-#?(:clj (defmacro read-tiled-map [fname]
-          (-> (str "public/" fname)
+#?(:clj (defmacro read-tiled-map [level]
+          (-> (str "public/levels/level" level ".tmx")
               io/resource
               slurp
               ts/parse
               pr-str)))
-
-(def box-goal-id 14)
 
 (defn crop-tileset [tileset width height tilewidth tileheight]
   "Crop the tileset (must be included in the parsed map) and return each tile as image"
