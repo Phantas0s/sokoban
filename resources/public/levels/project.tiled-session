@@ -29,16 +29,16 @@
             "scale": 6.1274999999999995,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 48.30681354549164,
-                "y": 16.156670746634028
+                "x": 48.143614851081196,
+                "y": 15.993472052223595
             }
         },
         "level1.tmx": {
             "scale": 2,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 41.5,
-                "y": 58
+                "x": 96,
+                "y": 96
             }
         },
         "level1.tmx#sokoban_tilesheet": {
@@ -48,8 +48,8 @@
             "scale": 1.5,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 177.99999999999997,
-                "y": 169.33333333333331
+                "x": 192,
+                "y": 191.99999999999997
             }
         },
         "level1_64.tmx#sokoban_tilesheet_64": {
