@@ -5,7 +5,6 @@
             [sokoban.levels :as levels]
             [sokoban.tiles :as tiles]
             [sokoban.hud :as hud]
-            [sokoban.tiles :as ti]
             [play-cljc.gl.core :as c]
             [play-cljc.gl.entities-2d :as e]
             [play-cljc.transforms :as t]
@@ -66,7 +65,7 @@
 
 
 (defn verify-win! [game {:keys [tiled-map level] :as state}]
-  (if (ti/same-position? tiled-map ["boxes" "goals"])
+  (if (tiles/same-position? tiled-map ["boxes" "goals"])
     (load-level! game (assoc state :level (inc level)))
     @*state)
   state)
