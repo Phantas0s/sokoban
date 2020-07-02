@@ -2,6 +2,8 @@
   (:require [sokoban.utils :as utils]
             [sokoban.move :as move]
             [sokoban.collision :as coll]
+            [sokoban.levels :as levels]
+            [sokoban.tiles :as tiles]
             [sokoban.hud :as hud]
             [sokoban.tiles :as ti]
             [play-cljc.gl.core :as c]
@@ -10,18 +12,11 @@
             [clojure.pprint :refer [pprint]]
             [clojure.edn :as edn]
             #?(:clj  [play-cljc.macros-java :refer [gl]]
-               :cljs [play-cljc.macros-js :refer-macros [gl]])
-            #?(:clj  [sokoban.tiles :as tiles :refer [read-tiled-map]]
-               :cljs [sokoban.tiles :as tiles :refer-macros [read-tiled-map]])))
-
-(def level-1 (read-tiled-map "1"))
-(def level-2 (read-tiled-map "2"))
-(def level-3 (read-tiled-map "3"))
-(def level-4 (read-tiled-map "4"))
+               :cljs [play-cljc.macros-js :refer-macros [gl]])))
 
 (defonce *state (atom {:pressed-keys #{}
                        :player-pos []
-                       :levels [level-1 level-2 level-3 level-4]
+                       :levels levels/levels
                        :level 1
                        :player-moves {}
                        :tiled-map {}
