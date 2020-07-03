@@ -4,8 +4,8 @@
    [sokoban.tiles :as ti]
    [play-cljc.transforms :as t]))
 
-(def box-sprite-id 1)
 (def box-goal-sprite-id 4)
+(def box-sprite-id 1)
 
 (defn collision? [tiled-map layer-name new-pos]
   (ti/tile-from-position tiled-map layer-name new-pos))
