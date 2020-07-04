@@ -39,9 +39,9 @@
         },
         "level1.tmx": {
             "scale": 2,
-            "selectedLayer": 4,
+            "selectedLayer": 3,
             "viewCenter": {
-                "x": 41.5,
+                "x": 41.75,
                 "y": 58
             }
         },
@@ -52,8 +52,8 @@
             "scale": 1.5,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 178,
-                "y": 169.33333333333334
+                "x": 192,
+                "y": 192
             }
         },
         "level1_64.tmx#sokoban_tilesheet_64": {
@@ -63,8 +63,8 @@
             "scale": 1,
             "selectedLayer": 4,
             "viewCenter": {
-                "x": 158,
-                "y": 296
+                "x": 400,
+                "y": 400
             }
         },
         "level2.tmx#sokoban_tilesheet": {
@@ -75,7 +75,7 @@
             "scale": 2.3037499999999995,
             "selectedLayer": 4,
             "viewCenter": {
-                "x": 159.73955507325016,
+                "x": 159.95659251220837,
                 "y": 160.17362995116662
             }
         },
@@ -86,8 +86,8 @@
             "scale": 1.5,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 142,
-                "y": 180.66666666666669
+                "x": 368.33333333333337,
+                "y": 173.33333333333334
             }
         },
         "level4.tmx#sokoban_tilesheet": {

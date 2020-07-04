@@ -65,7 +65,7 @@
 
 
 (defn verify-win! [game {:keys [tiled-map level] :as state}]
-  (if (tiles/same-position? tiled-map ["boxes" "goals"])
+  (if (tiles/all-placed? tiled-map "boxes" "goals")
     (load-level! game (assoc state :level (inc level)))
     @*state)
   state)

@@ -89,7 +89,18 @@
 (defn same-position?
   [tiled-map layers]
   (let [tiles (flatten (map (fn [layer] (filter (fn [tile] (= (:layer tile) layer)) (:tiles tiled-map))) layers))]
+    ; (println (count (reduce (fn [v m] (conj v (:pos m))) #{} tiles)))
+    ; (println (/ (count tiles) (count layers)))
     (= (/ (count tiles) (count layers)) (count (reduce (fn [v m] (conj v (:pos m))) #{} tiles)))))
+
+(defn all-placed?
+  [tiled-map box-layer goal-layer]
+  (let [boxes (filter (fn [tile] (= (:layer tile) box-layer)) (:tiles tiled-map))
+        goals (filter (fn [tile] (= (:layer tile) goal-layer)) (:tiles tiled-map))
+        pos-goals (reduce (fn [v m] (conj v (:pos m))) #{} goals)
+        pos-boxes (reduce (fn [v m] (conj v (:pos m))) #{} boxes)
+        goal-boxes-not-places (reduce (fn [v m] (conj v (:pos m))) pos-goals boxes)]
+    (= (count pos-boxes) (count goal-boxes-not-places))))
 
 (defn tile-from-position
   "Get a tile from a layer and a position"
