@@ -41,8 +41,8 @@
             "scale": 2,
             "selectedLayer": 3,
             "viewCenter": {
-                "x": 41.75,
-                "y": 58
+                "x": 96,
+                "y": 96
             }
         },
         "level1.tmx#sokoban_tilesheet": {
@@ -52,7 +52,7 @@
             "scale": 1.5,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 192,
+                "x": 191.99999999999997,
                 "y": 192
             }
         },
@@ -75,7 +75,7 @@
             "scale": 2.3037499999999995,
             "selectedLayer": 4,
             "viewCenter": {
-                "x": 159.95659251220837,
+                "x": 159.73955507325016,
                 "y": 160.17362995116662
             }
         },
@@ -86,7 +86,7 @@
             "scale": 1.5,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 368.33333333333337,
+                "x": 184.66666666666669,
                 "y": 173.33333333333334
             }
         },
@@ -100,6 +100,42 @@
                 "x": 406.66666666666663,
                 "y": 365.33333333333337
             }
+        },
+        "level5.tmx#sokoban_tilesheet": {
+            "scaleInDock": 1
+        },
+        "level6.tmx": {
+            "scale": 1.5,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 388,
+                "y": 402.66666666666663
+            }
+        },
+        "level6.tmx#sokoban_tilesheet": {
+            "scaleInDock": 1
+        },
+        "level7.tmx": {
+            "scale": 1,
+            "selectedLayer": 4,
+            "viewCenter": {
+                "x": 387,
+                "y": 376
+            }
+        },
+        "level7.tmx#sokoban_tilesheet": {
+            "scaleInDock": 1
+        },
+        "level8.tmx": {
+            "scale": 0.7490384615384614,
+            "selectedLayer": 4,
+            "viewCenter": {
+                "x": 399.1784338896021,
+                "y": 400.51347881899886
+            }
+        },
+        "level8.tmx#sokoban_tilesheet": {
+            "scaleInDock": 1
         }
     },
     "map.fixedSize": true,
@@ -121,6 +157,7 @@
     "project": "project.tiled-project",
     "property.type": "bool",
     "recentFiles": [
+        "level5.tmx",
         "level1.tmx",
         "character.tmx",
         "level2.tmx",
