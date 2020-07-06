@@ -3,7 +3,7 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "level8.tmx",
+    "activeFile": "",
     "expandedProjectPaths": [
         "."
     ],
@@ -52,8 +52,8 @@
             "scale": 1.5,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 191.99999999999997,
-                "y": 191.99999999999994
+                "x": 192.33333333333331,
+                "y": 192
             }
         },
         "level1_64.tmx#sokoban_tilesheet_64": {
@@ -63,8 +63,8 @@
             "scale": 1,
             "selectedLayer": 4,
             "viewCenter": {
-                "x": 400,
-                "y": 400
+                "x": 330.5,
+                "y": 399
             }
         },
         "level2.tmx#sokoban_tilesheet": {
@@ -75,8 +75,8 @@
             "scale": 2.3037499999999995,
             "selectedLayer": 4,
             "viewCenter": {
-                "x": 159.73955507325016,
-                "y": 96.36462289744983
+                "x": 129.57135105805753,
+                "y": 95.93054801953339
             }
         },
         "level3.tmx#sokoban_tilesheet": {
@@ -86,8 +86,8 @@
             "scale": 1.5,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 400,
-                "y": 400
+                "x": 353,
+                "y": 398.66666666666663
             }
         },
         "level4.tmx#sokoban_tilesheet": {
@@ -97,8 +97,8 @@
             "scale": 0.75,
             "selectedLayer": 3,
             "viewCenter": {
-                "x": 160,
-                "y": 160
+                "x": 67.33333333333337,
+                "y": 158.66666666666669
             }
         },
         "level5.tmx#sokoban_tilesheet": {
@@ -108,8 +108,8 @@
             "scale": 1.5,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 400,
-                "y": 400
+                "x": 353,
+                "y": 399.33333333333326
             }
         },
         "level6.tmx#sokoban_tilesheet": {
@@ -119,8 +119,8 @@
             "scale": 1,
             "selectedLayer": 4,
             "viewCenter": {
-                "x": 867,
-                "y": 375
+                "x": 376.5,
+                "y": 374
             }
         },
         "level7.tmx#sokoban_tilesheet": {
@@ -130,11 +130,22 @@
             "scale": 1.5,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 511.99999999999994,
-                "y": 388
+                "x": 411,
+                "y": 387.33333333333326
             }
         },
         "level8.tmx#sokoban_tilesheet": {
+            "scaleInDock": 1
+        },
+        "level9.tmx": {
+            "scale": 1.0048076923076923,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 390.622009569378,
+                "y": 399.08133971291863
+            }
+        },
+        "level9.tmx#sokoban_tilesheet": {
             "scaleInDock": 1
         }
     },
@@ -148,15 +159,6 @@
     "map.tileWidth": 32,
     "map.width": 25,
     "openFiles": [
-        "level1.tmx",
-        "level2.tmx",
-        "level3.tmx",
-        "level1_64.tmx",
-        "level4.tmx",
-        "level5.tmx",
-        "level6.tmx",
-        "level7.tmx",
-        "level8.tmx"
     ],
     "project": "project.tiled-project",
     "property.type": "bool",
@@ -170,6 +172,7 @@
         "level6.tmx",
         "level7.tmx",
         "level8.tmx",
+        "level9.tmx",
         "character.tmx"
     ],
     "tileset.embedInMap": true,
