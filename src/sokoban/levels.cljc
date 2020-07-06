@@ -8,6 +8,7 @@
 (def level-4 (read-tiled-map "4"))
 (def level-5 (read-tiled-map "5"))
 (def level-6 (read-tiled-map "6"))
-(def level-7 (read-tiled-map "8"))
+(def level-7 (read-tiled-map "7"))
+(def level-8 (read-tiled-map "8"))
 
-(def levels [level-7 level-2 level-3 level-4 level-5])
+(def levels [level-1 level-2 level-3 level-4 level-5 level-6 level-7 level-8])
