@@ -5,3 +5,4 @@ resources/public/*.out
 !.gitignore
 main-out/
 out/
+deploy.sh

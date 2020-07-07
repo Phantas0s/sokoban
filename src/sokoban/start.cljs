@@ -65,4 +65,3 @@
     (listen-for-keys)
     (resize context)
     (start-game context)))
-

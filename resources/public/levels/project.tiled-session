@@ -163,6 +163,7 @@
     "project": "project.tiled-project",
     "property.type": "bool",
     "recentFiles": [
+        "level9.tmx",
         "level1.tmx",
         "level2.tmx",
         "level3.tmx",
@@ -172,7 +173,6 @@
         "level6.tmx",
         "level7.tmx",
         "level8.tmx",
-        "level9.tmx",
         "character.tmx"
     ],
     "tileset.embedInMap": true,
