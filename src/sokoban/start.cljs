@@ -1,8 +1,8 @@
 (ns sokoban.start
   (:require [sokoban.core :as c]
             [play-cljc.gl.core :as pc]
-            [goog.events.KeyCodes]
-            [goog.events :as events]))
+            [goog.events :as events]
+            [goog.events.KeyCodes]))
 
 (def canvas-width 800)
 (def canvas-height 800)
@@ -16,18 +16,22 @@
 (defn msec->sec [n]
   (* 0.001 n))
 
+; practical but doesn't work with optimization advanced
+; keys are named pretty randomly
 (defn keycodes
   [k]
-  (get (js->clj goog.events.KeyCodes :keywordize-keys true) k))
+  (if-let [keycode (get (js->clj goog.events.KeyCodes) (str "$" k "$"))]
+    keycode
+    (get (js->clj goog.events.KeyCodes) k)))
 
 (defn keycode->keyword [keycode]
   (condp = keycode
-    (keycodes :LEFT) :left
-    (keycodes :RIGHT) :right
-    (keycodes :UP) :up
-    (keycodes :DOWN) :down
-    (keycodes :BACKSPACE) :backspace
-    (keycodes :R) :restart
+    37 :left
+    39 :right
+    38 :up
+    40 :down
+    8 :backspace
+    82 :restart
     nil))
 
 (defn game-loop [game]
