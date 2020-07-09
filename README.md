@@ -1,41 +1,39 @@
-**This is a try to use play-cljc** 
+# Play-Sokoban
 
-Only for ClojureScript! No thanks for native.
+This is a simple Sokoban game. The goal is to dig Clojurescript a bit, and WebGL 'cause why not.
 
-To build this project, you'll need the Clojure CLI tool:
+![screenshot of the game](./screenshot.png)
 
-https://clojure.org/guides/deps_and_cli
+You can [play it here](https://matthieucneude.com/sokoban).
 
+## Commands
 
-To develop in a browser with live code reloading:
+* `Arrow keys` / `hjkl` - Move
+* `r` - Restart the level
+* `Backspace` - Undo last move
 
-```
-clj -A:dev
-```
+## Disappointments
 
+There are 10 levels, and the game will crash at the end of the 10th. This is a deep allegory about the end of life.
 
-To build a release version for the web:
+You can't save. You need to do them all in one go.
 
-```
-clj -A:prod:play-cljc
-```
+## Development
 
+If you want to use my masterpiece for whatever you like: 
 
-To develop the native version:
+0. This game is a Clojurescript game only.
+1. You need the [Clojure CLI tool](https://clojure.org/guides/deps_and_cli).
+2. `clj -A:dev` - Enjoy developing in the browser with live code reloading.
+3. `clj -A:prod:play-cljc` - Build a release version to show to the world.
 
-```
-clj -A:dev native
+You can't compile the native version. There is no native version.
 
-# NOTE: On Mac OS, you need to add the macos alias:
+## Credits
 
-clj -A:dev:macos native
-```
+* Tileset: www.kenney.nl
+* Game engine: [play-cljc](https://github.com/oakes/play-cljc)
 
+## Licence
 
-To build the native version as a jar file:
-
-```
-clj -A:prod uberjar
-```
-
-Tileset: Credit (Kenney or www.kenney.nl)
+[MIT](https://choosealicense.com/licenses/mit/)
