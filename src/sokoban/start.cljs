@@ -24,12 +24,21 @@
     keycode
     (get (js->clj goog.events.KeyCodes) k)))
 
+; see https://keycode.info/
 (defn keycode->keyword [keycode]
   (condp = keycode
+    ; arrow keys
     37 :left
     39 :right
     38 :up
     40 :down
+
+    ; hjkl
+    72 :left
+    76 :right
+    75 :up
+    74 :down
+
     8 :backspace
     82 :restart
     nil))
