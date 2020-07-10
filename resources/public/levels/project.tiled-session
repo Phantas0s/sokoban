@@ -3,7 +3,7 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "",
+    "activeFile": "level10.tmx",
     "expandedProjectPaths": [
         "."
     ],
@@ -46,6 +46,17 @@
             }
         },
         "level1.tmx#sokoban_tilesheet": {
+            "scaleInDock": 1
+        },
+        "level10.tmx": {
+            "scale": 1.0105625,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 400.27212567258334,
+                "y": 400.76689962273485
+            }
+        },
+        "level10.tmx#sokoban_tilesheet": {
             "scaleInDock": 1
         },
         "level1_64.tmx": {
@@ -159,11 +170,14 @@
     "map.tileWidth": 32,
     "map.width": 25,
     "openFiles": [
+        "level10.tmx",
+        "level9.tmx"
     ],
     "project": "project.tiled-project",
     "property.type": "bool",
     "recentFiles": [
         "level9.tmx",
+        "level10.tmx",
         "level1.tmx",
         "level2.tmx",
         "level3.tmx",
