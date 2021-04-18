@@ -1,4 +1,4 @@
-(def nrepl-port 4000)
+(def nrepl-port 5000)
 (require
  '[nrepl.server :as nrepl-server]
  '[clojure.java.io :as io])
